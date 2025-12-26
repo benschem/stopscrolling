@@ -77,6 +77,9 @@ group :development, :test do
   # Factory Bot replaces fixtures with Ruby objects [https://github.com/thoughtbot/factory_bot_rails]
   gem 'factory_bot_rails'
 
+  # Simple one-liner tests for common Rails functionality [https://github.com/thoughtbot/shoulda-matchers]
+  gem 'shoulda-matchers', '~> 6.0'
+
   # Generate realistic fake data [https://github.com/faker-ruby/faker]
   gem 'faker', '~> 3.5'
 
