@@ -59,6 +59,9 @@ group :development, :test do
 
   # Generate realistic fake data [https://github.com/faker-ruby/faker]
   gem "faker", "~> 3.5"
+
+  # Pretty print your Ruby objects with style -- in full color and with proper indentation [https://github.com/awesome-print/awesome_print]
+  gem "awesome_print"
 end
 
 group :development do
