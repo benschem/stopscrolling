@@ -50,6 +50,9 @@ group :development, :test do
 
   # Use RSpec for testing [https://github.com/rspec/rspec-rails]
   gem "rspec-rails", "~> 8.0"
+
+  # Use SimpleCov [https://github.com/simplecov-ruby/simplecov] for code coverage
+  gem "simplecov", require: false
 end
 
 group :development do

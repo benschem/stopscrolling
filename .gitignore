@@ -35,3 +35,6 @@
 
 # Ignore RSpec persisted state between runs
 /spec/examples.txt
+
+# Ignore SimplCov files
+/coverage
