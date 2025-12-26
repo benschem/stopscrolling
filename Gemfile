@@ -53,6 +53,9 @@ group :development, :test do
 
   # Use SimpleCov [https://github.com/simplecov-ruby/simplecov] for code coverage
   gem "simplecov", require: false
+
+  # Factory Bot replaces fixtures with Ruby objects [https://github.com/thoughtbot/factory_bot_rails]
+  gem "factory_bot_rails"
 end
 
 group :development do
