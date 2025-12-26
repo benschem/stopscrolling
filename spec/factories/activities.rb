@@ -3,5 +3,9 @@
 FactoryBot.define do
   factory :activity do
     name { Faker::Hobby.unique.activity }
+
+    trait :invalid do
+      name { nil }
+    end
   end
 end
