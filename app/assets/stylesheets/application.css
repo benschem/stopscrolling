@@ -8,3 +8,9 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* To override Pico CSS variables: */
+/* :root {
+  --pico-primary: #0d6efd;
+  --pico-font-family: system-ui, sans-serif;
+} */
