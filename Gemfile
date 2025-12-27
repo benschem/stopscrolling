@@ -71,6 +71,9 @@ group :development, :test do
   # Use RSpec for testing [https://github.com/rspec/rspec-rails]
   gem 'rspec-rails', '~> 8.0'
 
+  # Test by simulating real user interactions [https://github.com/teamcapybara/capybara]
+  gem 'capybara'
+
   # Use SimpleCov [https://github.com/simplecov-ruby/simplecov] for code coverage
   gem 'simplecov', require: false
 
