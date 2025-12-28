@@ -18,7 +18,7 @@ gem 'turbo-rails'
 gem 'stimulus-rails'
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem 'bcrypt', '~> 3.1.7'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
@@ -82,9 +82,6 @@ group :development, :test do
 
   # Simple one-liner tests for common Rails functionality [https://github.com/thoughtbot/shoulda-matchers]
   gem 'shoulda-matchers', '~> 6.0'
-
-  # Generate realistic fake data [https://github.com/faker-ruby/faker]
-  gem 'faker', '~> 3.5'
 
   # Pretty print your Ruby objects with style -- in full color and with proper indentation [https://github.com/awesome-print/awesome_print]
   gem 'awesome_print'
