@@ -13,6 +13,7 @@ class ActivitiesController < ApplicationController
   # POST /activities
   def create
     @activity = Activity.new(activity_params)
+    @activity.user = Current.user
 
     if @activity.save
       redirect_to activities_path, notice: 'Activity created!' # rubocop:disable Rails/I18nLocaleTexts
