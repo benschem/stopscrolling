@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root 'activities#index'
 
+  resources :passwords, param: :token
+
   resources :activities, only: %i[index create destroy] do
     collection do
       get 'random'
