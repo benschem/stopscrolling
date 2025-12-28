@@ -3,11 +3,11 @@
 # Activities Controller
 class ActivitiesController < ApplicationController
   before_action :set_activity, only: %i[destroy]
+  before_action :set_activities, only: %i[index random]
 
   # GET /activities
   def index
     @activity = Activity.new
-    @activities = Activity.all
   end
 
   # POST /activities
@@ -31,7 +31,6 @@ class ActivitiesController < ApplicationController
   # GET /activities/random
   def random
     @activity = Activity.new
-    @activities = Activity.all
     @random_activity = @activities.sample
     render :index
   end
@@ -40,6 +39,10 @@ class ActivitiesController < ApplicationController
 
   def set_activity
     @activity = Activity.find(params.expect(:id))
+  end
+
+  def set_activities
+    @activities = Current.user.activities
   end
 
   def activity_params
