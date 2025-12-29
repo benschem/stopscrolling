@@ -4,6 +4,8 @@
 class UsersController < ApplicationController
   allow_unauthenticated_access
 
+  before_action :delete_expired_unverified_user, only: [:create]
+
   rate_limit to: 10, within: 3.minutes, only: :create, with: lambda {
     redirect_to new_user_url, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
   }
@@ -26,5 +28,10 @@ class UsersController < ApplicationController
 
   def user_params
     params.expect(user: %i[email_address password])
+  end
+
+  def delete_expired_unverified_user
+    existing_user = User.find_by(email_address: user_params[:email_address])
+    existing_user.destroy if existing_user&.unverified? && existing_user.verification_expired?
   end
 end

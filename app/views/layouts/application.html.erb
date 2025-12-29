@@ -32,8 +32,27 @@
               <%= link_to 'StopScroll.ing', root_path %>
             </strong>
           </li>
+        </ul>
+        <ul>
           <% if Current.session %>
-            <li><%= button_to 'Sign out', session_path, method: :delete, class: "secondary outline" %></li>
+            <details class="dropdown">
+              <summary>
+                <small><%= current_user.email_address %></small>
+              </summary>
+              <ul dir="rtl">
+                <% if current_user.unverified? %>
+                  <li>
+                    <%= button_to 'Resend verification email',
+                            resend_verify_email_address_path,
+                            data: { turbo: false },
+                            aria: { label: "Resend verification email" } %>
+                  </li>
+                <% end %>
+                <li>
+                  <%= button_to 'Sign out', session_path, method: :delete, class: "secondary outline" %>
+                </li>
+              </ul>
+            </details>
           <% else %>
             <div>
               <li><%= link_to 'Sign up', new_user_path  %></li>

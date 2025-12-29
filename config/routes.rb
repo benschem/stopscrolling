@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   resource :session
   resources :users, only: %i[new create]
   resources :passwords, param: :token
+  resource :verify_email_address, only: %i[show], param: :token do
+    post :resend
+  end
 
   resources :activities, only: %i[index create destroy] do
     collection do

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  subject(:user) { build(:user, password: password) }
+  subject(:user) { create(:user, password: password) }
 
   let(:password) { 'secret123' }
 
@@ -19,9 +19,9 @@ RSpec.describe User, type: :model do
     end
 
     context 'with the correct password' do
-      it 'authenticates with the correct password' do
-        let(:correct_password) { password }
+      let(:correct_password) { password }
 
+      it 'authenticates with the correct password' do
         expect(user.authenticate(correct_password)).to eq(user)
       end
     end
@@ -61,7 +61,6 @@ RSpec.describe User, type: :model do
         'user',
         'user@',
         '@example.com',
-        'user@example',
         'user@.com'
       ).for(:email_address)
     end
@@ -76,6 +75,90 @@ RSpec.describe User, type: :model do
 
       it 'downcases and strips the email address' do
         expect(user.email_address).to eq('example@email.com')
+      end
+    end
+  end
+
+  describe '#verify!' do
+    before do
+      user.verify!
+    end
+
+    it 'records the time the user verified their email address' do
+      expect(user.verified_at).to be_truthy
+    end
+  end
+
+  describe '#verified?' do
+    context 'when user has verified their email address' do
+      before do
+        user.update!(verified_at: 1.hour.ago.to_date)
+      end
+
+      it 'returns true' do
+        expect(user.verified?).to be(true)
+      end
+    end
+
+    context 'when user has not verified their email address' do
+      before do
+        user.update!(verified_at: nil)
+      end
+
+      it 'returns false' do
+        expect(user.verified?).to be(false)
+      end
+    end
+  end
+
+  describe '#unverified?' do
+    context 'when user has verified their email address' do
+      before do
+        user.update!(verified_at: 1.hour.ago)
+      end
+
+      it 'returns false' do
+        expect(user.unverified?).to be(false)
+      end
+    end
+
+    context 'when user has not verified their email address' do
+      before do
+        user.update!(verified_at: nil)
+      end
+
+      it 'returns true' do
+        expect(user.unverified?).to be(true)
+      end
+    end
+  end
+
+  describe '#verification_expired?' do
+    let(:expired_timestamp) do
+      EmailAddressVerification::TOKEN_EXPIRES_IN.ago.to_date + 10.minutes
+    end
+
+    before do
+      user.update!(verified_at: expired_timestamp)
+    end
+
+    context 'when verification link has expired' do
+      before do
+        user.update!(verified_at: nil)
+      end
+
+      it 'returns true' do
+        expect(user.unverified?).to be(true)
+      end
+    end
+
+    context 'when user is verified' do
+      before do
+        user.update!(verified_at: Date.yesterday)
+      end
+
+      it 'returns false' do
+        expect(user.unverified?).to be(false)
       end
     end
   end

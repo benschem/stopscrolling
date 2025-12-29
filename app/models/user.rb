@@ -2,6 +2,10 @@
 
 # User
 class User < ApplicationRecord
+  include EmailAddressVerification
+
+  attr_accessor :skip_email_verification
+
   has_secure_password
 
   has_many :sessions, dependent: :destroy

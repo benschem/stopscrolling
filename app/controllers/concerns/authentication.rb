@@ -13,9 +13,8 @@ module Authentication
 
   class_methods do
     def allow_unauthenticated_access(**options)
-      # Always skip require_authentication, regardless of format
-      skip_before_action :require_authentication, if: -> { true }, **options
-      skip_before_action :update_session_last_seen_at_and_expires_at, if: -> { true }, **options
+      skip_before_action :require_authentication, **options
+      skip_before_action :update_session_last_seen_at_and_expires_at, **options
     end
   end
 
