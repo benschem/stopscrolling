@@ -38,3 +38,7 @@
 
 # Ignore SimplCov files
 /coverage
+
+/config/credentials/production.key
+
+/config/credentials/staging.key
