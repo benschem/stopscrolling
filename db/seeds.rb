@@ -8,10 +8,19 @@ User.destroy_all
 puts 'Destroying activities...'
 Activity.destroy_all
 
-puts 'Seeding user...'
+puts 'Seeding demo user...'
 user = User.new(email_address: 'user@example.com')
 user.password = '123456'
+user.verified_at = Time.current
 user.save!
+
+if Rails.env.production?
+  puts 'Seeding real user...'
+  user = User.new(email_address: 'benschembri@gmail.com')
+  user.password = 'changethiswhenchangingispossible'
+  user.verified_at = Time.current
+  user.save!
+end
 
 puts 'Seeding activities...'
 5.times do
