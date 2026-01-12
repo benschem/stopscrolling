@@ -21,6 +21,15 @@
     <%= stylesheet_link_tag "pico.min", data: { turbo_track: "reload" } %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <% if Rails.env.production? %>
+      <script
+        defer
+        data-domain="stopscroll.ing"
+        data-api="/pa-stats/api/event"
+        src="/pa-stats/js/script.js">
+      </script>
+    <% end %>
   </head>
 
   <body>
