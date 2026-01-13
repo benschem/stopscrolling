@@ -51,7 +51,7 @@ group :development, :test do
   gem 'rubocop-factory_bot', '~> 2.27'
 
   # rubocop-rails [https://rubygems.org/gems/rubocop-rails]
-  gem 'rubocop-rails', '~> 2.32'
+  gem 'rubocop-rails', '~> 2.34'
 
   # rubocop-rspec [https://rubygems.org/gems/rubocop-rspec]
   gem 'rubocop-rspec', '~> 3.6'
