@@ -1,24 +1,62 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Ever catch yourself endlessly scrolling, wishing you were doing something more meaningful, but can’t decide what?
 
-Things you may want to cover:
+[stopscroll.ing](https://stopscroll.ing) helps you choose by randomly selecting an activity you like, or surpising you with something new.
 
-* Ruby version
+## Setup
 
-* System dependencies
+After cloning the repo, run these commands to install dependencies and setup the database:
 
-* Configuration
+```
+bundle install
+bin/rails db:setup
+```
 
-* Database creation
+## Running it locally
 
-* Database initialization
+Start puma
 
-* How to run the test suite
+```
+bin/rails server
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Other commands
 
-* Deployment instructions
+Update ruby dependencies:
 
-* ...
+```
+bundle update
+```
+
+Run specs:
+
+```
+ENV=test bundle exec rspec --format documentation --order defined
+```
+
+## Backend
+
+- Ruby
+- Rails
+- Sqlite3
+
+_Asset pipeline_
+
+- Propshaft
+- Importmap Rails
+
+_Background jobs_
+
+- Solid Queue (single database mode)
+- TODO: Mission Control dashboard
+
+_Email_
+
+- TODO: SendGrid
+
+## Front end
+
+- ERB
+- Hotwire (Turbo/Stimulus)
+- [Pico CSS](https://picocss.com/)
