@@ -54,7 +54,7 @@ group :development, :test do
   gem 'rubocop-rails', '~> 2.32'
 
   # rubocop-rspec [https://rubygems.org/gems/rubocop-rspec]
-  gem 'rubocop-rspec', '~> 3.6'
+  gem 'rubocop-rspec', '~> 3.9'
 
   # rubocop-rspec_rails [https://rubygems.org/gems/rubocop-rspec_rails]
   gem 'rubocop-rspec_rails', '~> 2.31'
