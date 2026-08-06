@@ -3,7 +3,7 @@
 # Activities Controller
 class ActivitiesController < ApplicationController
   before_action :set_activity, only: %i[destroy]
-  before_action :set_activities, only: %i[index random]
+  before_action :set_activities, only: %i[index random suggestion]
 
   # GET /activities
   def index

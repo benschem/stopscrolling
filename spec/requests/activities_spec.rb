@@ -77,4 +77,21 @@ RSpec.describe '/activities', type: :request do
       expect(response).to be_successful
     end
   end
+
+  describe 'GET /activities/suggestion' do
+    subject(:request) { get suggestion_activities_url }
+
+    before do
+      create(:activity, user: user, name: 'Read a book')
+      request
+    end
+
+    it 'renders a successful response' do
+      expect(response).to be_successful
+    end
+
+    it 'still shows the list of activities' do
+      expect(response.body).to include('Read a book')
+    end
+  end
 end
