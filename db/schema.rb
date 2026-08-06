@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_29_065150) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_06_140609) do
   create_table "activities", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.index ["name"], name: "index_activities_on_name", unique: true
+    t.index ["user_id", "name"], name: "index_activities_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
