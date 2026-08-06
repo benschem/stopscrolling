@@ -17,9 +17,8 @@ Rails.application.routes.draw do
   resource :session
   resources :users, only: %i[new create]
   resources :passwords, param: :token
-  resource :verify_email_address, only: %i[show], param: :token do
-    post :resend
-  end
+  post 'verify_email_address/resend' => 'verify_email_addresses#resend', as: :resend_verify_email_address
+  get 'verify_email_address/:token' => 'verify_email_addresses#show', as: :verify_email_address
 
   resources :activities, only: %i[index create destroy] do
     collection do

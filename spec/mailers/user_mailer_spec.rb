@@ -38,7 +38,7 @@ RSpec.describe UserMailer, type: :mailer do
     describe 'the email body' do
       let(:html_body) { mail.html_part.body.decoded }
       let(:explanatory_text) { 'verify your email address' }
-      let(:verification_link_regexp) { %r{http://example.com/verify_email_address\.[A-Za-z0-9\-_]+=*--[a-f0-9]+} }
+      let(:verification_link_regexp) { %r{http://example.com/verify_email_address/[A-Za-z0-9\-_]+=*--[a-f0-9]+} }
 
       it 'includes explanatory text' do
         expect(html_body).to include(explanatory_text)

@@ -9,7 +9,7 @@ class VerifyEmailAddressesController < ApplicationController
   }
 
   def show
-    user = User.find_by_token_for(:email_address_verification, params[:format])
+    user = User.find_by_token_for(:email_address_verification, params[:token])
 
     if user&.verified?
       redirect_to root_path, notice: 'Email address is already verified.' # rubocop:disable Rails/I18nLocaleTexts

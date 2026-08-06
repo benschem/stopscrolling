@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Email address verification', type: :request do
   describe 'GET /verify_email_address' do
-    subject(:request) { get verify_email_address_path, params: { token: token } }
+    subject(:request) { get verify_email_address_path(token) }
 
     context 'when the user is already verified' do
       let(:user) { create(:user, :verified) }
