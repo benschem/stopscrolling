@@ -3,11 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe '/activities', type: :request do
+  let(:user) { create(:user, :verified) }
+
+  before { sign_in(user) }
+
   describe 'GET /index' do
     subject(:request) { get activities_url }
 
     before do
-      create(:activity)
+      create(:activity, user: user)
       request
     end
 
@@ -23,7 +27,7 @@ RSpec.describe '/activities', type: :request do
       let(:params) { attributes_for(:activity) }
 
       it 'creates a new Activity' do
-        expect { request }.to change(Activity, :count).by(1)
+        expect { request }.to change(user.activities, :count).by(1)
       end
 
       it 'redirects to the activities list' do
@@ -49,7 +53,7 @@ RSpec.describe '/activities', type: :request do
   describe 'DELETE /destroy' do
     subject(:request) { delete activity_url(activity) }
 
-    let!(:activity) { create(:activity) }
+    let!(:activity) { create(:activity, user: user) }
 
     it 'destroys the requested activity' do
       expect { request }.to change(Activity, :count).by(-1)
@@ -65,7 +69,7 @@ RSpec.describe '/activities', type: :request do
     subject(:request) { get random_activities_url }
 
     before do
-      create(:activity)
+      create(:activity, user: user)
       request
     end
 

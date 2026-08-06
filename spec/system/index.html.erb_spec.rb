@@ -3,9 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe 'Activities index', type: :system do
+  let(:user) { create(:user, :verified) }
+
   before do
-    create(:activity, name: 'Read a book')
-    create(:activity, name: 'Write a book')
+    sign_in(user)
+    create(:activity, user: user, name: 'Read a book')
+    create(:activity, user: user, name: 'Write a book')
     visit activities_path
   end
 
@@ -14,27 +17,27 @@ RSpec.describe 'Activities index', type: :system do
   end
 
   it 'displays a form to create a new activity' do
-    expect(page).to have_button('Add activity')
+    expect(page).to have_button('Add to your list')
   end
 
   context 'when the form is submitted with a valid name' do
     before do
       fill_in 'activity_name', with: 'New Activity'
-      click_button 'Add activity'
+      click_button 'Add to your list'
     end
 
     it 'creates a new activity' do
-      expect(page).to have_text('New Activity')
+      expect(page).to have_text('New activity')
     end
   end
 
   context 'when the form is submitted with an invalid name' do
     before do
       fill_in 'activity_name', with: ''
-      click_button 'Add activity'
+      click_button 'Add to your list'
     end
 
-    it 'creates a new activity' do
+    it 'shows an error' do
       expect(page).to have_text("Name can't be blank")
     end
   end
@@ -49,13 +52,13 @@ RSpec.describe 'Activities index', type: :system do
     end
   end
 
-  context "when user clicks the 'I'm bored' button" do
+  context 'when the user asks for something from their list' do
     before do
-      click_link "I'm bored"
+      click_link 'From your list'
     end
 
     it 'displays a random activity' do
-      expect(page).to have_text('You should')
+      expect(page).to have_css('.random strong', text: /book/i)
     end
   end
 end

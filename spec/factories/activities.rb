@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :activity do
+    user
     name { Faker::Hobby.unique.activity }
 
     trait :invalid do
