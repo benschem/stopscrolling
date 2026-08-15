@@ -6,9 +6,9 @@ RSpec.describe 'Email address verification', type: :request do
   describe 'GET /verify_email_address' do
     subject(:request) { get verify_email_address_path(token) }
 
-    context 'when the user is already verified' do
-      let(:user) { create(:user, :verified) }
-      let(:token) { user.email_address_verification_token }
+    context 'when the account is already verified' do
+      let(:account) { create(:account, :verified) }
+      let(:token) { account.email_address_verification_token }
 
       before do
         request
@@ -23,9 +23,9 @@ RSpec.describe 'Email address verification', type: :request do
       end
     end
 
-    context 'when the user is unverified and can be verified' do
-      let(:user) { create(:user) }
-      let(:token) { user.email_address_verification_token }
+    context 'when the account is unverified and can be verified' do
+      let(:account) { create(:account) }
+      let(:token) { account.email_address_verification_token }
 
       before do
         request
@@ -39,8 +39,8 @@ RSpec.describe 'Email address verification', type: :request do
         expect(flash[:notice]).to eq('Email address verified successfully.')
       end
 
-      it 'marks the user as verified' do
-        expect(user.reload).to be_verified
+      it 'marks the account as verified' do
+        expect(account.reload).to be_verified
       end
     end
 
@@ -60,11 +60,11 @@ RSpec.describe 'Email address verification', type: :request do
       end
     end
 
-    context 'when the token does not match any user' do
+    context 'when the token does not match any account' do
       let(:token) { 'this-will-not-be-checked' }
 
       before do
-        allow(User).to receive(:find_by).and_return(nil)
+        allow(Account).to receive(:find_by_token_for).and_return(nil)
         request
       end
 

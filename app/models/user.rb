@@ -1,23 +1,12 @@
 # frozen_string_literal: true
 
-# User
+# Someone who owns a list of activities, whether or not they have signed up
 class User < ApplicationRecord
-  include EmailAddressVerification
-
-  attr_accessor :skip_email_verification
-
-  has_secure_password
-
+  has_one :account, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :activities, dependent: :destroy
 
-  normalizes :email_address, with: ->(email) { email&.strip&.downcase }
-
-  validates :email_address,
-            presence: true,
-            uniqueness: { case_sensitive: false },
-            format: {
-              with: URI::MailTo::EMAIL_REGEXP,
-              message: 'must be a valid email address' # rubocop:disable Rails/I18nLocaleTexts
-            }
+  def signed_up?
+    account.present?
+  end
 end

@@ -7,11 +7,15 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   # Expose methods to views
-  helper_method :current_user
+  helper_method :current_user, :current_account
 
   private
 
   def current_user
     Current.user
+  end
+
+  def current_account
+    Current.user&.account
   end
 end

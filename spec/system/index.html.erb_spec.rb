@@ -3,10 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Activities index', type: :system do
-  let(:user) { create(:user, :verified) }
+  let(:account) { create(:account, :verified) }
+  let(:user) { account.user }
 
   before do
-    sign_in(user)
+    sign_in(account)
     create(:activity, user: user, name: 'Read a book')
     create(:activity, user: user, name: 'Write a book')
     visit activities_path

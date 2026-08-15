@@ -11,9 +11,9 @@ class SessionsController < ApplicationController
   def new; end
 
   def create
-    user = User.authenticate_by(session_params.to_h)
-    if user
-      start_new_session_for user
+    account = Account.authenticate_by(session_params.to_h)
+    if account
+      start_new_session_for account.user
       redirect_to after_authentication_url, notice: 'Signed in successfully!' # rubocop:disable Rails/I18nLocaleTexts
     else
       flash.now[:alert] = 'Sign in failed.' # rubocop:disable Rails/I18nLocaleTexts

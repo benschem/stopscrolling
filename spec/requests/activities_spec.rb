@@ -3,9 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe '/activities', type: :request do
-  let(:user) { create(:user, :verified) }
+  let(:account) { create(:account, :verified) }
+  let(:user) { account.user }
 
-  before { sign_in(user) }
+  before { sign_in(account) }
 
   describe 'GET /index' do
     subject(:request) { get activities_url }

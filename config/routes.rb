@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   root 'activities#index'
 
   resource :session
-  resources :users, only: %i[new create]
+  resources :accounts, only: %i[new create]
   resources :passwords, param: :token
   post 'verify_email_address/resend' => 'verify_email_addresses#resend', as: :resend_verify_email_address
   get 'verify_email_address/:token' => 'verify_email_addresses#show', as: :verify_email_address

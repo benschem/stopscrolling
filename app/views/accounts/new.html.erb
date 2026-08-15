@@ -12,20 +12,20 @@
 
 <h1>Sign Up</h1>
 
-<% if @user.errors.any? %>
+<% if @account.errors.any? %>
     <article class="flash flash-error">
       <strong>
-        <%= pluralize(@user.errors.count, "error") %> prevented this user from being saved:
+        <%= pluralize(@account.errors.count, "error") %> prevented this account from being saved:
       </strong>
       <ul>
-        <% @user.errors.each do |error| %>
+        <% @account.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
     </article>
   <% end %>
 
-<%= form_with model: @user, local: true do |form| %>
+<%= form_with model: @account, local: true do |form| %>
   <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address" %><br>
   <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
   <%= form.submit "Sign up" %>

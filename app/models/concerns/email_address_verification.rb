@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Verify a user's email address with a token that can be sent in an email and used to find the user
+# Verify an account's email address with a token that can be emailed and used to find the account
 module EmailAddressVerification
   extend ActiveSupport::Concern
 
@@ -15,7 +15,7 @@ module EmailAddressVerification
     scope :still_unverified_after_grace_period, lambda {
       where(verified_at: nil)
         .where(created_at: ...UNVERIFIED_GRACE_PERIOD.ago)
-        .includes(:activities)
+        .includes(user: :activities)
     }
   end
 
@@ -47,10 +47,10 @@ module EmailAddressVerification
   private
 
   def requires_email_verification?
-    !skip_email_verification && new_user_or_email_address_updated?
+    !skip_email_verification && new_account_or_email_address_updated?
   end
 
-  def new_user_or_email_address_updated?
+  def new_account_or_email_address_updated?
     !persisted? || saved_change_to_email_address?
   end
 
@@ -59,6 +59,6 @@ module EmailAddressVerification
 
     # Use update_column because this runs inside after_commit
     update_column(:verified_at, nil) # rubocop:disable Rails/SkipsModelValidations
-    UserMailer.verify_email_address(self).deliver_later!
+    AccountMailer.verify_email_address(self).deliver_later!
   end
 end

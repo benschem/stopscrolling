@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe UserMailer, type: :mailer do
-  let(:user) { create(:user, verification_sent_at: nil) }
+RSpec.describe AccountMailer, type: :mailer do
+  let(:account) { create(:account, verification_sent_at: nil) }
 
   describe '#verify_email_address' do
-    subject(:mail) { described_class.verify_email_address(user) }
+    subject(:mail) { described_class.verify_email_address(account) }
 
     context 'when sent' do
       before do
@@ -14,7 +14,7 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'records when the verification email was sent at' do
-        expect(user.reload.verification_sent_at).not_to be_nil
+        expect(account.reload.verification_sent_at).not_to be_nil
       end
     end
 
@@ -26,8 +26,8 @@ RSpec.describe UserMailer, type: :mailer do
         expect(mail.subject).to eq(email_subject)
       end
 
-      it "addressed to the user's email" do
-        expect(mail.to).to eq([user.email_address])
+      it 'addressed to the account email' do
+        expect(mail.to).to eq([account.email_address])
       end
 
       it 'sent from the app email address' do

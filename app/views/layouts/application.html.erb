@@ -46,10 +46,10 @@
           <% if Current.session %>
             <details class="dropdown">
               <summary>
-                <small><%= current_user.email_address %></small>
+                <small><%= current_account.email_address %></small>
               </summary>
               <ul dir="rtl">
-                <% if current_user.unverified? %>
+                <% if current_account.unverified? %>
                   <li>
                     <%= button_to 'Resend verification email',
                             resend_verify_email_address_path,
@@ -64,7 +64,7 @@
             </details>
           <% else %>
             <div>
-              <li><%= link_to 'Sign up', new_user_path  %></li>
+              <li><%= link_to 'Sign up', new_account_path  %></li>
               <li><%= link_to 'Sign in', new_session_path, role: "button"  %></li>
             </div>
           <% end %>

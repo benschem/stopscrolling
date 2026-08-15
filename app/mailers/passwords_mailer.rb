@@ -2,8 +2,8 @@
 
 # Password emails
 class PasswordsMailer < ApplicationMailer
-  def reset(user)
-    @user = user
-    mail subject: 'Reset your password', to: user.email_address # rubocop:disable Rails/I18nLocaleTexts
+  def reset(account)
+    @account = account
+    mail subject: 'Reset your password', to: account.email_address # rubocop:disable Rails/I18nLocaleTexts
   end
 end

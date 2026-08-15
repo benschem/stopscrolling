@@ -8,7 +8,7 @@ module Authentication
   included do
     before_action :require_authentication
     before_action :update_session_last_seen_at_and_expires_at, if: :user_signed_in?
-    before_action :warn_of_impeding_account_deletion, if: :user_email_address_unverified?
+    before_action :warn_of_impeding_account_deletion, if: :account_email_address_unverified?
 
     helper_method :authenticated?
   end
@@ -99,8 +99,8 @@ module Authentication
   end
 
   def warn_of_impeding_account_deletion
-    if Current.user.verification_expired?
-      active_for = Time.current - Current.user.created_at
+    if Current.account.verification_expired?
+      active_for = Time.current - Current.account.created_at
       grace_remaining = [EmailAddressVerification::UNVERIFIED_GRACE_PERIOD - active_for, 0].max
       timeframe = distance_of_time_in_words(grace_remaining)
       flash[:warn] = "This account will be deleted unless you verify your email address within #{timeframe}"
@@ -109,7 +109,7 @@ module Authentication
     end
   end
 
-  def user_email_address_unverified?
-    Current.user&.unverified?
+  def account_email_address_unverified?
+    Current.account&.unverified?
   end
 end
