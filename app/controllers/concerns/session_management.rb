@@ -37,6 +37,8 @@ module SessionManagement
   end
 
   def start_session_for(user)
+    terminate_session
+
     Current.user = user
     Current.session = create_session_for(user)
     remember_session(Current.session)
