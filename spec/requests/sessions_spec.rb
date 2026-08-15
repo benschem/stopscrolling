@@ -25,5 +25,12 @@ RSpec.describe 'Sessions', type: :request do
 
       expect { get activities_url }.not_to change(Session, :count)
     end
+
+    it 'leaves the visitor signed out' do
+      delete session_url
+      get activities_url
+
+      expect(response.body).to include('Sign in')
+    end
   end
 end

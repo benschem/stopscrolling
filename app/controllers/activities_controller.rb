@@ -2,6 +2,8 @@
 
 # Activities Controller
 class ActivitiesController < ApplicationController
+  allow_signed_out_access only: %i[index random suggestion]
+
   rescue_from ActiveRecord::RecordNotFound, with: :activity_not_found
 
   before_action :set_activity, only: %i[destroy]
