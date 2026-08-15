@@ -2,7 +2,7 @@
 
 # Verify an account's email address
 class VerifyEmailAddressesController < ApplicationController
-  allow_unauthenticated_access only: %i[show]
+  allow_signed_out_access only: %i[show]
 
   rate_limit to: 10, within: 3.minutes, only: :resend, with: lambda {
     redirect_to root_path, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts

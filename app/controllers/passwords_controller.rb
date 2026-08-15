@@ -2,7 +2,7 @@
 
 # People can reset forgotten passwords and change their passwords
 class PasswordsController < ApplicationController
-  allow_unauthenticated_access
+  allow_signed_out_access
 
   before_action :set_account_by_token, only: %i[edit update]
 

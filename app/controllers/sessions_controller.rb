@@ -2,7 +2,7 @@
 
 # User sessions
 class SessionsController < ApplicationController
-  allow_unauthenticated_access only: %i[new create]
+  allow_signed_out_access only: %i[new create]
 
   rate_limit to: 10, within: 3.minutes, only: :create, with: lambda {
     redirect_to new_session_url, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
@@ -13,8 +13,8 @@ class SessionsController < ApplicationController
   def create
     account = Account.authenticate_by(session_params.to_h)
     if account
-      start_new_session_for account.user
-      redirect_to after_authentication_url, notice: 'Signed in successfully!' # rubocop:disable Rails/I18nLocaleTexts
+      sign_in_to account
+      redirect_to after_sign_in_url, notice: 'Signed in successfully!' # rubocop:disable Rails/I18nLocaleTexts
     else
       flash.now[:alert] = 'Sign in failed.' # rubocop:disable Rails/I18nLocaleTexts
       render :new, status: :unprocessable_content

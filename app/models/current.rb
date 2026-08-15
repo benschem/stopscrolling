@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-# Current user session
+# Whose request this is. Set once per request by SessionManagement, so user is never nil inside
+# one, even for a visitor who has never been here before.
 class Current < ActiveSupport::CurrentAttributes
-  attribute :session
-  delegate :user, to: :session, allow_nil: true
+  attribute :session, :user
+
   delegate :account, to: :user, allow_nil: true
 end

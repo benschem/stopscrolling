@@ -5,6 +5,8 @@ module AccountVerificationWarning
   extend ActiveSupport::Concern
   include ActionView::Helpers::DateHelper
 
+  include SessionManagement
+
   included do
     before_action :warn_of_impending_account_deletion, if: :account_email_address_unverified?
   end

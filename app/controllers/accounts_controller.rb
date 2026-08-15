@@ -2,7 +2,7 @@
 
 # Signing up for an account
 class AccountsController < ApplicationController
-  allow_unauthenticated_access
+  allow_signed_out_access
 
   before_action :delete_expired_unverified_account, only: [:create]
 
@@ -16,11 +16,11 @@ class AccountsController < ApplicationController
 
   def create
     @account = Account.new(account_params)
-    @account.build_user
+    @account.user = Current.user
 
     if @account.save
-      start_new_session_for @account.user
-      redirect_to after_authentication_url, notice: 'Account created!' # rubocop:disable Rails/I18nLocaleTexts
+      sign_in_to @account
+      redirect_to after_sign_in_url, notice: 'Account created!' # rubocop:disable Rails/I18nLocaleTexts
     else
       render :new, status: :unprocessable_content
     end
