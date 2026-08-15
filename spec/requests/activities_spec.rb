@@ -63,6 +63,24 @@ RSpec.describe '/activities', type: :request do
       request
       expect(response).to redirect_to(activities_url)
     end
+
+    context 'when the activity belongs to someone else' do
+      let!(:activity) { create(:activity) }
+
+      it 'does not destroy it' do
+        expect { request }.not_to change(Activity, :count)
+      end
+
+      it 'redirects to the activities list' do
+        request
+        expect(response).to redirect_to(activities_url)
+      end
+
+      it 'sets an alert' do
+        request
+        expect(flash[:alert]).to eq('That activity does not exist.')
+      end
+    end
   end
 
   describe 'GET /activities/random' do

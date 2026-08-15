@@ -2,6 +2,8 @@
 
 # Activities Controller
 class ActivitiesController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :activity_not_found
+
   before_action :set_activity, only: %i[destroy]
   before_action :set_activities, only: %i[index random suggestion]
 
@@ -44,8 +46,12 @@ class ActivitiesController < ApplicationController
 
   private
 
+  def activity_not_found
+    redirect_to activities_path, alert: 'That activity does not exist.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
+  end
+
   def set_activity
-    @activity = Activity.find(params.expect(:id))
+    @activity = current_user.activities.find(params.expect(:id))
   end
 
   def set_activities
