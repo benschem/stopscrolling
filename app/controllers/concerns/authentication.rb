@@ -8,7 +8,6 @@ module Authentication
   included do
     before_action :require_authentication
     before_action :update_session_last_seen_at_and_expires_at, if: :user_signed_in?
-    before_action :warn_of_impeding_account_deletion, if: :account_email_address_unverified?
 
     helper_method :authenticated?
   end
