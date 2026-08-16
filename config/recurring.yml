@@ -18,6 +18,10 @@ production:
     class: CleanupUnverifiedUsersJob
     schedule: every day at 03:00
 
+  cleanup_expired_sessions:
+    class: CleanupExpiredSessionsJob
+    schedule: every day at 03:10
+
 development:
   cleanup_unverified_users:
     class: CleanupUnverifiedUsersJob
