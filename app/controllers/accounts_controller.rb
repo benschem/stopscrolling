@@ -15,6 +15,8 @@ class AccountsController < ApplicationController
   end
 
   def create
+    build_demo_activities
+
     @account = Account.new(account_params)
     @account.user = Current.user
 

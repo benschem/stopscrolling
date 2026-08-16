@@ -57,6 +57,8 @@ class ActivitiesController < ApplicationController
   end
 
   def set_activities
+    build_demo_activities
+
     @activities = current_user.activities
   end
 

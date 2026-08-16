@@ -56,7 +56,11 @@
 </section>
 
 <section class="activities">
-  <h2>Things you like doing.</h2>
+  <% if current_user.persisted? %>
+    <h2>Things you like doing.</h2>
+  <% else %>
+    <h2>Things you could be doing.</h2>
+  <% end %>
 
   <% if @activities.present? %>
     <ul class="activity-list">

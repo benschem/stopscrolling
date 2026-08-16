@@ -6,6 +6,10 @@ module RequestAuthentication
   def sign_in(account)
     post session_url, params: { email_address: account.email_address, password: account.password }
   end
+
+  def sign_up(email_address:, password: 'secret123')
+    post accounts_url, params: { account: { email_address: email_address, password: password } }
+  end
 end
 
 # Signing in through the form, the way a person would.

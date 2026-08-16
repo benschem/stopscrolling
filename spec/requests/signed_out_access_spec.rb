@@ -13,6 +13,14 @@ RSpec.describe 'Signed out access', type: :request do
     it 'offers a way to sign in' do
       expect(response.body).to include('Sign in')
     end
+
+    it 'offers a way to sign up' do
+      expect(response.body).to include('Sign up')
+    end
+
+    it 'offers no way to sign out' do
+      expect(response.body).not_to include('Sign out')
+    end
   end
 
   describe 'GET /activities/random' do

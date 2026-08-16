@@ -5,8 +5,9 @@
     </span>
 
     <span class="activity-actions">
+      <%# Use the full path (not just `activity`) to send an unsaved record %>
       <%= button_to "Delete",
-        activity,
+        activity_path(activity),
         method: :delete,
         class: "secondary outline",
         form: { data: { turbo_confirm: "Remove this activity?" } } %>
