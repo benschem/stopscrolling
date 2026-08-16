@@ -49,6 +49,20 @@ RSpec.describe '/activities', type: :request do
         expect(response).to have_http_status(:unprocessable_content)
       end
     end
+
+    context 'with a name already on the list' do
+      let(:name) { 'Read a book' }
+      let(:params) { attributes_for(:activity, name: name) }
+
+      before do
+        create(:activity, user: user, name: name)
+        request
+      end
+
+      it 'renders a response with 422 status' do
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
   end
 
   describe 'POST /create rate limiting' do
