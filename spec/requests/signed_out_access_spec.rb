@@ -24,7 +24,10 @@ RSpec.describe 'Signed out access', type: :request do
   end
 
   describe 'GET /activities/random' do
-    before { get random_activities_url }
+    before do
+      get random_activities_url
+      follow_redirect!
+    end
 
     it 'renders a successful response' do
       expect(response).to be_successful
@@ -32,7 +35,10 @@ RSpec.describe 'Signed out access', type: :request do
   end
 
   describe 'GET /activities/suggestion' do
-    before { get suggestion_activities_url }
+    before do
+      get suggestion_activities_url
+      follow_redirect!
+    end
 
     it 'renders a successful response' do
       expect(response).to be_successful

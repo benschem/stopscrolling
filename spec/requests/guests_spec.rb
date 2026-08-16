@@ -89,6 +89,7 @@ RSpec.describe 'Guests', type: :request do
       stub_const('ACTIVITIES_LIST', suggestion_pool)
       get activities_url
       ask_for_a_suggestion
+      follow_redirect!
     end
 
     it 'offers something they were not already shown' do

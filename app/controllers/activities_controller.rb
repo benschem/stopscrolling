@@ -19,6 +19,7 @@ class ActivitiesController < ApplicationController
   # GET /activities
   def index
     @activity = Activity.new
+    @random_activity = suggestion_named_in_the_url
   end
 
   # POST /activities
@@ -43,9 +44,7 @@ class ActivitiesController < ApplicationController
 
   # GET /activities/random
   def random
-    @activity = Activity.new
-    @random_activity = @activities.sample
-    render :index
+    redirect_to root_path(suggestion: @activities.sample&.name)
   end
 
   # GET /activities/suggestion
@@ -54,12 +53,21 @@ class ActivitiesController < ApplicationController
 
     return redirect_to root_path, notice: NOTHING_LEFT_TO_SUGGEST if suggested_name.nil?
 
-    @activity = Activity.new
-    @random_activity = Activity.new(name: suggested_name)
-    render :index
+    redirect_to root_path(suggestion: suggested_name)
   end
 
   private
+
+  def suggestion_named_in_the_url
+    name = params[:suggestion]
+    return if name.blank? || !ours_to_suggest?(name)
+
+    Activity.new(name: name)
+  end
+
+  def ours_to_suggest?(name)
+    @activities.any? { |activity| activity.name == name } || ACTIVITIES_LIST.include?(name)
+  end
 
   def activity_not_found
     redirect_to root_path, alert: 'That activity does not exist.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts

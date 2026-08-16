@@ -21,6 +21,29 @@ RSpec.describe '/activities', type: :request do
     end
   end
 
+  describe 'GET /index with a suggestion in the url' do
+    subject(:request) { get root_url(suggestion: suggested_name) }
+
+    let(:suggested_name) { 'Read a book' }
+
+    before do
+      create(:activity, user: user, name: 'Read a book')
+      request
+    end
+
+    it 'shows the suggestion' do
+      expect(response.body).to include('read a book')
+    end
+
+    context 'when the url names something nobody could have suggested' do
+      let(:suggested_name) { 'Something made up' }
+
+      it 'ignores it' do
+        expect(response.body).not_to include('something made up')
+      end
+    end
+  end
+
   describe 'POST /create' do
     subject(:request) { post activities_url, params: { activity: params } }
 
@@ -160,12 +183,12 @@ RSpec.describe '/activities', type: :request do
     subject(:request) { get random_activities_url }
 
     before do
-      create(:activity, user: user)
+      create(:activity, user: user, name: 'Read a book')
       request
     end
 
-    it 'renders a successful response' do
-      expect(response).to be_successful
+    it 'redirects to a url naming what it picked' do
+      expect(response).to redirect_to(root_url(suggestion: 'Read a book'))
     end
   end
 
@@ -180,16 +203,18 @@ RSpec.describe '/activities', type: :request do
       request
     end
 
-    it 'renders a successful response' do
-      expect(response).to be_successful
-    end
-
-    it 'still shows the list of activities' do
-      expect(response.body).to include('Read a book')
-    end
-
-    context 'when only one suggestion is missing from their list' do
+    context 'when there is something left to suggest' do
       let(:suggestion_pool) { ['Read a book', 'Go for a walk'] }
+
+      before { follow_redirect! }
+
+      it 'renders a successful response' do
+        expect(response).to be_successful
+      end
+
+      it 'still shows the list of activities' do
+        expect(response.body).to include('Read a book')
+      end
 
       it 'suggests the one they do not have yet' do
         expect(response.body).to include('go for a walk')
