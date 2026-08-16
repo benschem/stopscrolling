@@ -2,7 +2,7 @@
 
 # Activities Controller
 class ActivitiesController < ApplicationController
-  allow_signed_out_access only: %i[index random suggestion]
+  allow_signed_out_access only: %i[index random suggestion destroy]
 
   rescue_from ActiveRecord::RecordNotFound, with: :activity_not_found
 
@@ -28,7 +28,7 @@ class ActivitiesController < ApplicationController
 
   # DELETE /activities/1
   def destroy
-    @activity.destroy!
+    discard_activity
     redirect_to activities_path, notice: 'Activity deleted!', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   end
 
@@ -53,7 +53,26 @@ class ActivitiesController < ApplicationController
   end
 
   def set_activity
-    @activity = current_user.activities.find_by!(name: params.expect(:id))
+    name = params.expect(:id)
+
+    @activity = if current_user.persisted?
+                  current_user.activities.find_by!(name: name)
+                else
+                  find_demo_activity(name)
+                end
+  end
+
+  def find_demo_activity(name)
+    build_demo_activities
+
+    current_user.activities.find { |activity| activity.name == name } ||
+      raise(ActiveRecord::RecordNotFound)
+  end
+
+  def discard_activity
+    return demo_activities.remove(@activity.name) unless @activity.persisted?
+
+    @activity.destroy!
   end
 
   def set_activities

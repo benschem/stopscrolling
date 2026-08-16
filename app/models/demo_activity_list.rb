@@ -18,6 +18,10 @@ class DemoActivityList
     session[KEY]
   end
 
+  def remove(name)
+    session[KEY] = names - [name]
+  end
+
   def clear
     session.delete(KEY)
   end

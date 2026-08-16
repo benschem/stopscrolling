@@ -3,21 +3,44 @@
 require 'rails_helper'
 
 RSpec.describe 'Demo activity list', type: :request do
-  let(:suggested_names) { session[DemoActivityList::KEY] }
+  def suggestions
+    session[DemoActivityList::KEY]
+  end
 
-  describe 'GET /activities as a visitor' do
-    before { get activities_url }
+  describe 'GET /activities' do
+    context 'when signed out' do
+      before { get activities_url }
 
-    it 'suggests five activities' do
-      expect(suggested_names.size).to eq(5)
+      it 'suggests a list of activities' do
+        expect(suggestions.size).to eq(DemoActivityList::SIZE)
+      end
+
+      it 'shows each of them, addressed by name' do
+        expect(response.body).to include(*suggestions.map { |name| activity_path(name) })
+      end
+
+      it 'heads the list as suggestions rather than as their own' do
+        expect(response.body).to include('Things you could be doing')
+      end
     end
 
-    it 'shows each of them, addressed by name' do
-      expect(response.body).to include(*suggested_names.map { |name| activity_path(name) })
-    end
+    context 'when signed in' do
+      before do
+        sign_in(create(:account, :verified))
+        get activities_url
+      end
 
-    it 'heads the list as suggestions rather than as their own' do
-      expect(response.body).to include('Things you could be doing')
+      it 'suggests nothing' do
+        expect(suggestions).to be_nil
+      end
+
+      it 'shows the empty state instead' do
+        expect(response.body).to include('Nothing here yet')
+      end
+
+      it 'heads the list as their own' do
+        expect(response.body).to include('Things you like doing')
+      end
     end
   end
 
@@ -35,6 +58,54 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
+  describe 'dismissing a suggestion' do
+    subject(:dismiss) { delete activity_url(dismissed_name) }
+
+    let(:dismissed_name) { suggestions.first }
+
+    before do
+      get activities_url
+      dismissed_name # pin it, before dismissing changes what "first" means
+    end
+
+    it 'saves nothing' do
+      expect { dismiss }.not_to change(Activity, :count)
+    end
+
+    context 'when it has been dismissed' do
+      before { dismiss }
+
+      it 'takes them back to the list rather than to sign in' do
+        expect(response).to redirect_to(activities_url)
+      end
+
+      it 'drops it from the suggestions' do
+        expect(suggestions).not_to include(dismissed_name)
+      end
+
+      it 'stops showing it' do
+        get activities_url
+        expect(response.body).not_to include(dismissed_name)
+      end
+    end
+  end
+
+  describe 'dismissing every suggestion' do
+    before do
+      get activities_url
+      suggestions.each { |name| delete activity_url(name) }
+    end
+
+    it 'suggests a fresh set on the next request' do
+      get activities_url
+      expect(suggestions.size).to eq(DemoActivityList::SIZE)
+    end
+
+    it 'saves nothing' do
+      expect(Activity.count).to be_zero
+    end
+  end
+
   describe 'coming back in a new browser session' do
     before do
       get activities_url
@@ -42,11 +113,11 @@ RSpec.describe 'Demo activity list', type: :request do
       get activities_url
     end
 
-    it 'suggests a fresh five' do
-      expect(suggested_names.size).to eq(5)
+    it 'suggests a fresh set' do
+      expect(suggestions.size).to eq(DemoActivityList::SIZE)
     end
 
-    it 'still has nothing saved' do
+    it 'saves nothing' do
       expect(Activity.count).to be_zero
     end
   end
@@ -54,15 +125,16 @@ RSpec.describe 'Demo activity list', type: :request do
   describe 'signing up without adding anything' do
     let(:email_address) { 'visitor@example.com' }
     let(:new_account) { Account.find_by(email_address: email_address) }
+    let(:names_before_signing_up) { suggestions }
 
     before do
       get activities_url
-      suggested_names # read while the suggestions are still in the session
+      names_before_signing_up
       sign_up(email_address: email_address)
     end
 
     it 'keeps the suggestions as the list of the account they just made' do
-      expect(new_account.user.activities.pluck(:name)).to match_array(suggested_names)
+      expect(new_account.user.activities.pluck(:name)).to match_array(names_before_signing_up)
     end
   end
 
@@ -74,8 +146,8 @@ RSpec.describe 'Demo activity list', type: :request do
       get activities_url
     end
 
-    it 'suggests a fresh five rather than the list they took with them' do
-      expect(suggested_names).not_to match_array(Activity.pluck(:name))
+    it 'suggests a fresh set rather than the list they took with them' do
+      expect(suggestions).not_to match_array(Activity.pluck(:name))
     end
   end
 
@@ -92,7 +164,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
 
     it 'discards the suggestions they were shown while signed out' do
-      expect(suggested_names).to be_nil
+      expect(suggestions).to be_nil
     end
 
     it 'shows their own list' do
@@ -101,25 +173,6 @@ RSpec.describe 'Demo activity list', type: :request do
 
     it 'leaves no stray user behind' do
       expect(User.count).to eq(1)
-    end
-  end
-
-  describe 'GET /activities when signed in' do
-    before do
-      sign_in(create(:account, :verified))
-      get activities_url
-    end
-
-    it 'suggests nothing' do
-      expect(suggested_names).to be_nil
-    end
-
-    it 'shows the empty state instead' do
-      expect(response.body).to include('Nothing here yet')
-    end
-
-    it 'heads the list as their own' do
-      expect(response.body).to include('Things you like doing')
     end
   end
 end
