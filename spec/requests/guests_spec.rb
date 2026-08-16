@@ -164,4 +164,83 @@ RSpec.describe 'Guests', type: :request do
       expect(User.count).to eq(1)
     end
   end
+
+  context 'when a guest signs up' do
+    subject(:sign_up_for_an_account) { sign_up(email_address: 'guest@example.com') }
+
+    let(:new_account) { Account.sole }
+    let(:guest_before_signing_up) { User.sole }
+    let(:session_before_signing_up) { Session.sole }
+    let(:list_before_signing_up) { guest_before_signing_up.activities.pluck(:name) }
+
+    before do
+      add_as_a_visitor('Go for a walk')
+      list_before_signing_up # pin what they had, before an account is attached to it
+      session_before_signing_up
+      sign_up_for_an_account
+    end
+
+    it 'attaches the account to the user row they already have' do
+      expect(new_account.user).to eq(guest_before_signing_up)
+    end
+
+    it 'leaves their list where it was' do
+      expect(new_account.user.activities.pluck(:name)).to match_array(list_before_signing_up)
+    end
+
+    it 'rotates their session rather than adding another', :aggregate_failures do
+      expect(Session.count).to eq(1)
+      expect(Session.sole).not_to eq(session_before_signing_up)
+    end
+  end
+
+  context 'when a guest signs up with an email that is taken' do
+    subject(:sign_up_for_an_account) { sign_up(email_address: taken_email) }
+
+    let(:taken_email) { 'taken@example.com' }
+    let(:guest) { User.where.missing(:account).sole }
+    let(:list_before_signing_up) { guest.activities.pluck(:name) }
+
+    before do
+      create(:account, :verified, email_address: taken_email)
+      add_as_a_visitor('Go for a walk')
+      list_before_signing_up
+      sign_up_for_an_account
+    end
+
+    it 'refuses it with a validation error', :aggregate_failures do
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include('has already been taken')
+    end
+
+    it 'leaves their list untouched' do
+      expect(guest.activities.reload.pluck(:name)).to match_array(list_before_signing_up)
+    end
+  end
+
+  context 'when a guest signs in to an existing account' do
+    subject(:sign_in_to_the_account) { sign_in(account) }
+
+    let(:account) { create(:account, :verified) }
+    let(:guest) { User.where.missing(:account).sole }
+
+    before do
+      create(:activity, user: account.user, name: 'Play the piano')
+      add_as_a_visitor('Go for a walk')
+      sign_in_to_the_account
+      get activities_url
+    end
+
+    it "shows them the account's list" do
+      expect(response.body).to include('Play the piano')
+    end
+
+    it 'stops showing what they had as a guest' do
+      expect(response.body).not_to include('Go for a walk')
+    end
+
+    it 'leaves the abandoned guest for the sweep rather than destroying it' do
+      expect(guest.activities.pluck(:name)).to include('Go for a walk')
+    end
+  end
 end
