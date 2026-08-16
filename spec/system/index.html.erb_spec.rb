@@ -18,13 +18,13 @@ RSpec.describe 'Activities index', type: :system do
   end
 
   it 'displays a form to create a new activity' do
-    expect(page).to have_button('Add to your list')
+    expect(page).to have_button('Add')
   end
 
   context 'when the form is submitted with a valid name' do
     before do
       fill_in 'activity_name', with: 'New Activity'
-      click_button 'Add to your list'
+      click_button 'Add'
     end
 
     it 'creates a new activity' do
@@ -35,7 +35,7 @@ RSpec.describe 'Activities index', type: :system do
   context 'when the form is submitted with an invalid name' do
     before do
       fill_in 'activity_name', with: ''
-      click_button 'Add to your list'
+      click_button 'Add'
     end
 
     it 'shows an error' do
@@ -45,7 +45,7 @@ RSpec.describe 'Activities index', type: :system do
 
   context 'when an activity is deleted' do
     before do
-      click_button 'Delete', match: :first
+      click_button 'Remove', match: :first
     end
 
     it 'removes it from the page' do
@@ -55,7 +55,7 @@ RSpec.describe 'Activities index', type: :system do
 
   context 'when the user asks for something from their list' do
     before do
-      click_button 'From your list'
+      click_button 'Something I like'
     end
 
     it 'displays a random activity' do

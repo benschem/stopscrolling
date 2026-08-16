@@ -29,7 +29,7 @@ class ActivitiesController < ApplicationController
     @activity = current_user.activities.build(activity_params)
 
     if activity_saved?
-      redirect_to root_path, notice: 'Activity created!', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to root_path, notice: 'Added', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     else
       @activities = list_without(@activity)
       render :index, status: :unprocessable_content
@@ -39,7 +39,7 @@ class ActivitiesController < ApplicationController
   # DELETE /activities/1
   def destroy
     discard_activity
-    redirect_to root_path, notice: 'Activity deleted!', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to root_path, notice: 'Removed', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   end
 
   # POST /activities/random

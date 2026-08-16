@@ -2,8 +2,8 @@
   <span><%= activity.name.capitalize %></span>
 
   <%# Use the full path (not just `activity`) to send an unsaved record %>
-  <%= button_to "Delete",
+  <%= button_to "Remove",
         activity_path(activity),
         method: :delete,
-        form: { data: { turbo_confirm: "Remove this activity?" } } %>
+        form: { data: { turbo_confirm: "Remove #{activity.name.downcase}?" } } %>
 </li>
