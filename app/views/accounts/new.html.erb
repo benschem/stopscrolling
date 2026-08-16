@@ -1,15 +1,3 @@
-<% flash.each do |type, message| %>
-  <% alert_class = case type.to_sym
-     when :notice then "flash flash-success"
-     when :alert  then "flash flash-error"
-     else "alert"
-     end %>
-
-  <aside role="status" class="<%= alert_class %>">
-    <%= message %>
-  </aside>
-<% end %>
-
 <h1>Sign Up</h1>
 
 <% if @account.errors.any? %>

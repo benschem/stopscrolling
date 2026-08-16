@@ -1,17 +1,5 @@
 <% content_for :title, "Stop Scrolling" %>
 
-<% flash.each do |type, message| %>
-  <% alert_class = case type.to_sym
-     when :notice then "flash flash-success"
-     when :alert  then "flash flash-error"
-     else "flash flash-error"
-     end %>
-
-  <aside role="status" class="<%= alert_class %>">
-    <%= message %>
-  </aside>
-<% end %>
-
 <section class="intro">
   <h1>Stop scrolling!</h1>
   <p>
