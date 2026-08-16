@@ -18,6 +18,10 @@ class DemoActivityList
     session[KEY]
   end
 
+  def clear
+    session.delete(KEY)
+  end
+
   private
 
   attr_reader :session

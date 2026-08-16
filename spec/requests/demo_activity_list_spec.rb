@@ -66,6 +66,44 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
+  describe 'signing out after signing up' do
+    before do
+      get activities_url
+      sign_up(email_address: 'visitor@example.com')
+      delete session_url
+      get activities_url
+    end
+
+    it 'suggests a fresh five rather than the list they took with them' do
+      expect(suggested_names).not_to match_array(Activity.pluck(:name))
+    end
+  end
+
+  describe 'signing in after the session expired' do
+    let(:account) { create(:account, :verified) }
+
+    before do
+      create(:activity, user: account.user, name: 'Go for a walk')
+      sign_in(account)
+      travel(Session::EXPIRES_IN + 1.day)
+      get activities_url # expired: they are a visitor again, and get suggestions
+      sign_in(account)
+      get activities_url
+    end
+
+    it 'discards the suggestions they were shown while signed out' do
+      expect(suggested_names).to be_nil
+    end
+
+    it 'shows their own list' do
+      expect(response.body).to include('Go for a walk')
+    end
+
+    it 'leaves no stray user behind' do
+      expect(User.count).to eq(1)
+    end
+  end
+
   describe 'GET /activities when signed in' do
     before do
       sign_in(create(:account, :verified))

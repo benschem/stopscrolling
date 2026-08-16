@@ -34,4 +34,19 @@ RSpec.describe DemoActivityList, type: :model do
       end
     end
   end
+
+  describe '#clear' do
+    before do
+      demo_list.names
+      demo_list.clear
+    end
+
+    it 'forgets the suggestions' do
+      expect(session).not_to have_key(described_class::KEY)
+    end
+
+    it 'suggests a fresh five when asked again' do
+      expect(demo_list.names.size).to eq(5)
+    end
+  end
 end
