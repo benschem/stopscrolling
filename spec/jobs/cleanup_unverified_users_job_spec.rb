@@ -42,8 +42,14 @@ RSpec.describe CleanupUnverifiedUsersJob, type: :job do
       )
     end
 
+    let!(:guest) { create(:user, created_at: 8.days.ago) }
+
     before do
       cleanup_unverified_users
+    end
+
+    it 'never reaches a user who has no account' do
+      expect(User.exists?(guest.id)).to be(true)
     end
 
     it 'destroys the user behind an account that was never verified in time' do

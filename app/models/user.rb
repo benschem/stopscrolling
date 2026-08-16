@@ -6,6 +6,12 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :activities, dependent: :destroy
 
+  # Abandoned because there's no user to sign in as and no session with the browser.
+  # The age check spares a guest saved moments ago whose session has not started yet.
+  scope :abandoned_guests, lambda {
+    where.missing(:account, :sessions).where(created_at: ...Session::EXPIRES_IN.ago)
+  }
+
   def signed_up?
     account.present?
   end
