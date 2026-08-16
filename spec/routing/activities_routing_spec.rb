@@ -25,11 +25,11 @@ RSpec.describe ActivitiesController, type: :routing do
     end
 
     it 'routes to #random' do
-      expect(get: '/activities/random').to route_to('activities#random')
+      expect(post: '/activities/random').to route_to('activities#random')
     end
 
     it 'routes to #suggestion' do
-      expect(get: '/activities/suggestion').to route_to('activities#suggestion')
+      expect(post: '/activities/suggestion').to route_to('activities#suggestion')
     end
   end
 end

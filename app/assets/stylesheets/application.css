@@ -112,6 +112,17 @@ section + section {
   margin-block-start: 1rem;
 }
 
+/* button_to renders a form each, which would otherwise stack them */
+.random-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.random-actions form {
+  margin-block-end: 0;
+}
+
 h1,
 h2,
 h3 {

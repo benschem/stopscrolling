@@ -179,8 +179,8 @@ RSpec.describe '/activities', type: :request do
     end
   end
 
-  describe 'GET /activities/random' do
-    subject(:request) { get random_activities_url }
+  describe 'POST /activities/random' do
+    subject(:request) { post random_activities_url }
 
     before do
       create(:activity, user: user, name: 'Read a book')
@@ -192,8 +192,8 @@ RSpec.describe '/activities', type: :request do
     end
   end
 
-  describe 'GET /activities/suggestion' do
-    subject(:request) { get suggestion_activities_url }
+  describe 'POST /activities/suggestion' do
+    subject(:request) { post suggestion_activities_url }
 
     let(:suggestion_pool) { ACTIVITIES_LIST }
 

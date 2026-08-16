@@ -20,19 +20,21 @@
       <p>Need some inspiration?</p>
     <% end %>
 
-    <%# Prefetch would pick the suggestion on hover, so the click shows a stale roll. %>
-    <%= link_to "From your list",
-                random_activities_path,
-                role: "button",
-                data: { turbo_prefetch: false },
-                aria: { label: "From your list" } %>
+    <%# These roll a die rather than fetch a fixed page, so they are POSTs, not links. Turbo only
+        morphs a redirect back to the exact url you were on, and these add ?suggestion=, so the
+        action it would infer is "advance". Saying "replace" is what keeps scroll and focus. %>
+    <div class="random-actions">
+      <%= button_to "From your list",
+                    random_activities_path,
+                    data: { turbo_action: "replace" },
+                    aria: { label: "From your list" } %>
 
-    <%= link_to "Random suggestion",
-                suggestion_activities_path,
-                role: "button",
-                class: 'secondary',
-                data: { turbo_prefetch: false },
-                aria: { label: "Random suggestion" } %>
+      <%= button_to "Random suggestion",
+                    suggestion_activities_path,
+                    class: 'secondary',
+                    data: { turbo_action: "replace" },
+                    aria: { label: "Random suggestion" } %>
+    </div>
   </article>
 </section>
 

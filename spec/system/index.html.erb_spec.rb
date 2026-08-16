@@ -55,7 +55,7 @@ RSpec.describe 'Activities index', type: :system do
 
   context 'when the user asks for something from their list' do
     before do
-      click_link 'From your list'
+      click_button 'From your list'
     end
 
     it 'displays a random activity' do

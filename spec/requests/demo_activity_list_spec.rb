@@ -46,11 +46,11 @@ RSpec.describe 'Demo activity list', type: :request do
     end
 
     it 'saves nothing when asking for something from the list' do
-      expect { get random_activities_url }.not_to change(Activity, :count)
+      expect { post random_activities_url }.not_to change(Activity, :count)
     end
 
     it 'saves nothing when asking for a suggestion' do
-      expect { get suggestion_activities_url }.not_to change(Activity, :count)
+      expect { post suggestion_activities_url }.not_to change(Activity, :count)
     end
   end
 

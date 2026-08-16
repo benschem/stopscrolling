@@ -22,8 +22,8 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index create destroy], constraints: { id: /.+/ }, format: false do
     collection do
-      get 'random'
-      get 'suggestion'
+      post 'random'
+      post 'suggestion'
     end
   end
 end

@@ -79,7 +79,7 @@ RSpec.describe 'Guests', type: :request do
   end
 
   context 'when a visitor asks for a suggestion' do
-    subject(:ask_for_a_suggestion) { get suggestion_activities_url }
+    subject(:ask_for_a_suggestion) { post suggestion_activities_url }
 
     # One more name than a demo list holds, so exactly one is left to suggest
     let(:suggestion_pool) { Array.new(DemoActivityList::SIZE + 1) { |index| "Suggestion #{index}" } }

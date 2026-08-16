@@ -42,18 +42,18 @@ class ActivitiesController < ApplicationController
     redirect_to root_path, notice: 'Activity deleted!', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   end
 
-  # GET /activities/random
+  # POST /activities/random
   def random
-    redirect_to root_path(suggestion: @activities.sample&.name)
+    redirect_to root_path(suggestion: @activities.sample&.name), status: :see_other
   end
 
-  # GET /activities/suggestion
+  # POST /activities/suggestion
   def suggestion
     suggested_name = suggestions_not_on_the_list.sample
 
-    return redirect_to root_path, notice: NOTHING_LEFT_TO_SUGGEST if suggested_name.nil?
+    return redirect_to root_path, notice: NOTHING_LEFT_TO_SUGGEST, status: :see_other if suggested_name.nil?
 
-    redirect_to root_path(suggestion: suggested_name)
+    redirect_to root_path(suggestion: suggested_name), status: :see_other
   end
 
   private
