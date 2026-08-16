@@ -65,6 +65,22 @@ RSpec.describe '/activities', type: :request do
       expect(response).to redirect_to(activities_url)
     end
 
+    context 'when the name has a dot in it' do
+      let!(:activity) { create(:activity, user: user, name: 'Watch Dr. Who') }
+
+      it 'destroys the requested activity' do
+        expect { request }.to change(Activity, :count).by(-1)
+      end
+    end
+
+    context 'when the name has a slash in it' do
+      let!(:activity) { create(:activity, user: user, name: 'Cook/bake something') }
+
+      it 'destroys the requested activity' do
+        expect { request }.to change(Activity, :count).by(-1)
+      end
+    end
+
     context 'when the activity belongs to someone else' do
       let!(:activity) { create(:activity) }
 

@@ -16,8 +16,20 @@ RSpec.describe ActivitiesController, type: :routing do
       expect(delete: '/activities/1').to route_to('activities#destroy', id: '1')
     end
 
+    it 'keeps a dot in the name instead of reading it as a format' do
+      expect(delete: '/activities/Watch%20Dr.%20Who').to route_to('activities#destroy', id: 'Watch Dr. Who')
+    end
+
+    it 'keeps an escaped slash in the name' do
+      expect(delete: '/activities/Cook%2Fbake').to route_to('activities#destroy', id: 'Cook/bake')
+    end
+
     it 'routes to #random' do
       expect(get: '/activities/random').to route_to('activities#random')
+    end
+
+    it 'routes to #suggestion' do
+      expect(get: '/activities/suggestion').to route_to('activities#suggestion')
     end
   end
 end

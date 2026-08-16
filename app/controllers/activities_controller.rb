@@ -53,7 +53,7 @@ class ActivitiesController < ApplicationController
   end
 
   def set_activity
-    @activity = current_user.activities.find(params.expect(:id))
+    @activity = current_user.activities.find_by!(name: params.expect(:id))
   end
 
   def set_activities
