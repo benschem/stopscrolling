@@ -6,6 +6,11 @@ class ActivitiesController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotFound, with: :activity_not_found
 
+  # Double the auth limit: typing out ten activities in a sitting is ordinary first-visit behaviour.
+  rate_limit to: 20, within: 3.minutes, only: :create, with: lambda {
+    redirect_to activities_url, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
+  }
+
   before_action :set_activity, only: %i[destroy]
   before_action :set_activities, only: %i[index random suggestion]
 

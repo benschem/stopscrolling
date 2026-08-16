@@ -51,6 +51,40 @@ RSpec.describe '/activities', type: :request do
     end
   end
 
+  describe 'POST /create rate limiting' do
+    before do
+      enable_rate_limiting
+      20.times { |number| post activities_url, params: { activity: { name: "Activity number #{number}" } } }
+    end
+
+    it 'allows twenty within three minutes' do
+      expect(user.activities.count).to eq(20)
+    end
+
+    context 'when a twenty first is posted' do
+      before { post activities_url, params: { activity: { name: 'One too many' } } }
+
+      it 'does not create it' do
+        expect(user.activities.count).to eq(20)
+      end
+
+      it 'says to try again later' do
+        expect(flash[:alert]).to eq('Try again later.')
+      end
+    end
+
+    context 'when three minutes have passed' do
+      before do
+        travel 4.minutes
+        post activities_url, params: { activity: { name: 'One later on' } }
+      end
+
+      it 'allows another' do
+        expect(user.activities.count).to eq(21)
+      end
+    end
+  end
+
   describe 'DELETE /destroy' do
     subject(:request) { delete activity_url(activity) }
 
