@@ -2,6 +2,8 @@
 
 # Activities Controller
 class ActivitiesController < ApplicationController
+  NOTHING_LEFT_TO_SUGGEST = "You've already got everything we can think of."
+
   allow_signed_out_access only: %i[index random suggestion create destroy]
 
   rescue_from ActiveRecord::RecordNotFound, with: :activity_not_found
@@ -47,8 +49,12 @@ class ActivitiesController < ApplicationController
 
   # GET /activities/suggestion
   def suggestion
+    suggested_name = suggestions_not_on_the_list.sample
+
+    return redirect_to activities_path, notice: NOTHING_LEFT_TO_SUGGEST if suggested_name.nil?
+
     @activity = Activity.new
-    @random_activity = Activity.new(name: ACTIVITIES_LIST.sample)
+    @random_activity = Activity.new(name: suggested_name)
     render :index
   end
 
@@ -89,6 +95,10 @@ class ActivitiesController < ApplicationController
     return demo_activities.remove(@activity.name) unless @activity.persisted?
 
     @activity.destroy!
+  end
+
+  def suggestions_not_on_the_list
+    ACTIVITIES_LIST - @activities.map(&:name)
   end
 
   def set_activities

@@ -164,7 +164,10 @@ RSpec.describe '/activities', type: :request do
   describe 'GET /activities/suggestion' do
     subject(:request) { get suggestion_activities_url }
 
+    let(:suggestion_pool) { ACTIVITIES_LIST }
+
     before do
+      stub_const('ACTIVITIES_LIST', suggestion_pool)
       create(:activity, user: user, name: 'Read a book')
       request
     end
@@ -175,6 +178,23 @@ RSpec.describe '/activities', type: :request do
 
     it 'still shows the list of activities' do
       expect(response.body).to include('Read a book')
+    end
+
+    context 'when only one suggestion is missing from their list' do
+      let(:suggestion_pool) { ['Read a book', 'Go for a walk'] }
+
+      it 'suggests the one they do not have yet' do
+        expect(response.body).to include('go for a walk')
+      end
+    end
+
+    context 'when their list already has everything we could suggest' do
+      let(:suggestion_pool) { ['Read a book'] }
+
+      it 'says so instead of suggesting a duplicate', :aggregate_failures do
+        expect(response).to redirect_to(activities_url)
+        expect(flash[:notice]).to eq("You've already got everything we can think of.")
+      end
     end
   end
 end

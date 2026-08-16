@@ -68,6 +68,24 @@ RSpec.describe 'Guests', type: :request do
     end
   end
 
+  context 'when a visitor asks for a suggestion' do
+    subject(:ask_for_a_suggestion) { get suggestion_activities_url }
+
+    # One more name than a demo list holds, so exactly one is left to suggest
+    let(:suggestion_pool) { Array.new(DemoActivityList::SIZE + 1) { |index| "Suggestion #{index}" } }
+    let(:only_name_not_yet_shown) { (suggestion_pool - suggestions).sole }
+
+    before do
+      stub_const('ACTIVITIES_LIST', suggestion_pool)
+      get activities_url
+      ask_for_a_suggestion
+    end
+
+    it 'offers something they were not already shown' do
+      expect(response.body).to include(only_name_not_yet_shown.downcase)
+    end
+  end
+
   context 'when a guest comes back within the session lifetime' do
     subject(:come_back) { get activities_url }
 
