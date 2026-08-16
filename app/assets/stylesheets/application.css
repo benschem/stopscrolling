@@ -157,8 +157,9 @@
     padding-inline: max(var(--pad), calc((100% - var(--measure)) / 2));
 
     /* The phrase leading up to the activity is the qualifier, the activity is the
-       destination. A sign separates those by weight and width, not by colour, so the
-       plate stays flat. The tint is support, not the signal. */
+       destination. Weight and tint carry that, at one width — mixing widths mid-sentence
+       read as a mistake rather than a decision. 60% is as dim as the qualifier can go
+       and still clear 3:1 on every plate at this size. */
     h1 {
       font-size: clamp(2.25rem, 8vw, 5.5rem);
       font-weight: 400;
@@ -167,12 +168,11 @@
       letter-spacing: -0.005em;
       text-transform: uppercase;
       text-wrap: balance;
-      color: color-mix(in oklab, var(--chalk) 80%, var(--field));
+      color: color-mix(in oklab, var(--chalk) 60%, var(--field));
     }
 
     strong {
       font-weight: 800;
-      font-stretch: 100%;
       color: var(--chalk);
     }
 
