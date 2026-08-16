@@ -22,7 +22,7 @@ RSpec.describe 'Guests', type: :request do
     end
 
     it 'takes them back to the list rather than to sign in' do
-      expect(response).to redirect_to(activities_url)
+      expect(response).to redirect_to(root_url)
     end
 
     it 'leaves them without an account' do

@@ -72,7 +72,7 @@ RSpec.describe 'Demo activity list', type: :request do
       before { dismiss }
 
       it 'takes them back to the list rather than to sign in' do
-        expect(response).to redirect_to(activities_url)
+        expect(response).to redirect_to(root_url)
       end
 
       it 'drops it from the suggestions' do

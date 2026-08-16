@@ -33,7 +33,7 @@ RSpec.describe '/activities', type: :request do
 
       it 'redirects to the activities list' do
         request
-        expect(response).to redirect_to(activities_url)
+        expect(response).to redirect_to(root_url)
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe '/activities', type: :request do
 
     it 'redirects to the activities list' do
       request
-      expect(response).to redirect_to(activities_url)
+      expect(response).to redirect_to(root_url)
     end
 
     context 'when the name has a dot in it' do
@@ -146,7 +146,7 @@ RSpec.describe '/activities', type: :request do
 
       it 'redirects to the activities list' do
         request
-        expect(response).to redirect_to(activities_url)
+        expect(response).to redirect_to(root_url)
       end
 
       it 'sets an alert' do
@@ -200,7 +200,7 @@ RSpec.describe '/activities', type: :request do
       let(:suggestion_pool) { ['Read a book'] }
 
       it 'says so instead of suggesting a duplicate', :aggregate_failures do
-        expect(response).to redirect_to(activities_url)
+        expect(response).to redirect_to(root_url)
         expect(flash[:notice]).to eq("You've already got everything we can think of.")
       end
     end
