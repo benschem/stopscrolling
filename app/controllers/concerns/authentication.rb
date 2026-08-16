@@ -30,6 +30,10 @@ module Authentication
     request_sign_in unless signed_in?
   end
 
+  def require_signed_out
+    redirect_to root_path, notice: "You're already signed in." if signed_in? # rubocop:disable Rails/I18nLocaleTexts
+  end
+
   def request_sign_in
     session[:return_to_after_signing_in] = request.url
 

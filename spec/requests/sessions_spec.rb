@@ -5,6 +5,20 @@ require 'rails_helper'
 RSpec.describe 'Sessions', type: :request do
   let(:account) { create(:account, :verified) }
 
+  describe 'GET /session/new' do
+    context 'when they are already signed in' do
+      before do
+        sign_in(account)
+        get new_session_url
+      end
+
+      it 'sends them back to their list rather than showing the form', :aggregate_failures do
+        expect(response).to redirect_to(root_url)
+        expect(flash[:notice]).to eq("You're already signed in.")
+      end
+    end
+  end
+
   describe 'POST /session' do
     before { sign_in(account) }
 

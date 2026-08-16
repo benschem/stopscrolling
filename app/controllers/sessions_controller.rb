@@ -4,6 +4,8 @@
 class SessionsController < ApplicationController
   allow_signed_out_access only: %i[new create]
 
+  before_action :require_signed_out, only: %i[new create]
+
   rate_limit to: 10, within: 3.minutes, only: :create, with: lambda {
     redirect_to new_session_url, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
   }

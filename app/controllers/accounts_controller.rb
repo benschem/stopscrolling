@@ -4,6 +4,7 @@
 class AccountsController < ApplicationController
   allow_signed_out_access
 
+  before_action :require_signed_out
   before_action :delete_expired_unverified_account, only: [:create]
 
   rate_limit to: 10, within: 3.minutes, only: :create, with: lambda {
