@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   before_action :require_signed_out, only: %i[new create]
 
   rate_limit to: 10, within: 3.minutes, only: :create, with: lambda {
-    redirect_to new_session_url, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to new_session_url, alert: 'Try again later.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   }
 
   def new; end
@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
     account = Account.authenticate_by(session_params.to_h)
     if account
       sign_in_to account
-      redirect_to after_sign_in_url, notice: 'Signed in successfully!' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to after_sign_in_url, notice: 'Signed in successfully!', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     else
       flash.now[:alert] = 'Sign in failed.' # rubocop:disable Rails/I18nLocaleTexts
       render :new, status: :unprocessable_content
@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
 
   def destroy
     terminate_session
-    redirect_to new_session_path
+    redirect_to new_session_path, status: :see_other
   end
 
   private

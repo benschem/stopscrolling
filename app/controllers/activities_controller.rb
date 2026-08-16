@@ -10,7 +10,7 @@ class ActivitiesController < ApplicationController
 
   # Double the auth limit: typing out ten activities in a sitting is ordinary first-visit behaviour.
   rate_limit to: 20, within: 3.minutes, only: :create, with: lambda {
-    redirect_to root_url, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to root_url, alert: 'Try again later.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   }
 
   before_action :set_activity, only: %i[destroy]
@@ -29,7 +29,7 @@ class ActivitiesController < ApplicationController
     @activity = current_user.activities.build(activity_params)
 
     if activity_saved?
-      redirect_to root_path, notice: 'Activity created!' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to root_path, notice: 'Activity created!', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     else
       @activities = list_without(@activity)
       render :index, status: :unprocessable_content

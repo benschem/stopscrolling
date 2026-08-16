@@ -5,7 +5,7 @@ class VerifyEmailAddressesController < ApplicationController
   allow_signed_out_access only: %i[show]
 
   rate_limit to: 10, within: 3.minutes, only: :resend, with: lambda {
-    redirect_to root_path, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to root_path, alert: 'Try again later.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   }
 
   def show
@@ -23,11 +23,11 @@ class VerifyEmailAddressesController < ApplicationController
   def resend
     if current_account&.unverified?
       AccountMailer.verify_email_address(current_account).deliver_later
-      redirect_to root_path, notice: 'Verification email resent.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to root_path, notice: 'Verification email resent.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     elsif current_account&.verified?
-      redirect_to root_path, alert: 'Email address is already verified.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to root_path, alert: 'Email address is already verified.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     else
-      redirect_to root_path, alert: 'You must be signed in.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to root_path, alert: 'You must be signed in.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     end
   end
 end

@@ -8,7 +8,7 @@ class AccountsController < ApplicationController
   before_action :delete_expired_unverified_account, only: [:create]
 
   rate_limit to: 10, within: 3.minutes, only: :create, with: lambda {
-    redirect_to new_account_url, alert: 'Try again later.' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to new_account_url, alert: 'Try again later.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   }
 
   def new
@@ -23,7 +23,7 @@ class AccountsController < ApplicationController
 
     if @account.save
       sign_in_to @account
-      redirect_to after_sign_in_url, notice: 'Account created!' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to after_sign_in_url, notice: 'Account created!', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     else
       render :new, status: :unprocessable_content
     end

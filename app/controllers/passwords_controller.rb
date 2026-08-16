@@ -2,6 +2,8 @@
 
 # People can reset forgotten passwords and change their passwords
 class PasswordsController < ApplicationController
+  RESET_INSTRUCTIONS_SENT = 'Password reset instructions sent.'
+
   allow_signed_out_access
 
   before_action :set_account_by_token, only: %i[edit update]
@@ -15,14 +17,14 @@ class PasswordsController < ApplicationController
       PasswordsMailer.reset(account).deliver_later
     end
 
-    redirect_to new_session_path, notice: 'Password reset instructions sent (if user with that email address exists).' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to new_session_path, notice: RESET_INSTRUCTIONS_SENT, status: :see_other
   end
 
   def update
     if @account.update(params.permit(:password, :password_confirmation))
-      redirect_to new_session_path, notice: 'Password has been reset.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to new_session_path, notice: 'Password has been reset.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     else
-      redirect_to edit_password_path(params[:token]), alert: 'Passwords did not match.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to edit_password_path(params[:token]), alert: 'Passwords did not match.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
     end
   end
 
