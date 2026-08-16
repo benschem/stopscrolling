@@ -3,10 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Demo activity list', type: :request do
-  def suggestions
-    session[DemoActivityList::KEY]
-  end
-
   describe 'GET /activities' do
     context 'when signed out' do
       before { get activities_url }
@@ -44,7 +40,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
-  describe 'browsing as a visitor' do
+  context 'when browsing as a visitor' do
     it 'saves nothing when looking at the list' do
       expect { get activities_url }.not_to change(Activity, :count)
     end
@@ -58,7 +54,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
-  describe 'dismissing a suggestion' do
+  context 'when a visitor dismisses a suggestion' do
     subject(:dismiss) { delete activity_url(dismissed_name) }
 
     let(:dismissed_name) { suggestions.first }
@@ -90,7 +86,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
-  describe 'dismissing every suggestion' do
+  context 'when a visitor dismisses every suggestion' do
     before do
       get activities_url
       suggestions.each { |name| delete activity_url(name) }
@@ -106,7 +102,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
-  describe 'coming back in a new browser session' do
+  context 'when a visitor comes back in a new browser session' do
     before do
       get activities_url
       reset!
@@ -122,7 +118,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
-  describe 'signing up without adding anything' do
+  context 'when a visitor signs up without adding anything' do
     let(:email_address) { 'visitor@example.com' }
     let(:new_account) { Account.find_by(email_address: email_address) }
     let(:names_before_signing_up) { suggestions }
@@ -138,7 +134,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
-  describe 'signing out after signing up' do
+  context 'when they sign out after signing up' do
     before do
       get activities_url
       sign_up(email_address: 'visitor@example.com')
@@ -151,7 +147,7 @@ RSpec.describe 'Demo activity list', type: :request do
     end
   end
 
-  describe 'signing in after the session expired' do
+  context 'when they sign in after the session expired' do
     let(:account) { create(:account, :verified) }
 
     before do

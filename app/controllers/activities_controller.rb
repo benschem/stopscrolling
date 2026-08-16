@@ -2,7 +2,7 @@
 
 # Activities Controller
 class ActivitiesController < ApplicationController
-  allow_signed_out_access only: %i[index random suggestion destroy]
+  allow_signed_out_access only: %i[index random suggestion create destroy]
 
   rescue_from ActiveRecord::RecordNotFound, with: :activity_not_found
 
@@ -21,10 +21,11 @@ class ActivitiesController < ApplicationController
 
   # POST /activities
   def create
-    @activity = Activity.new(activity_params)
-    @activity.user = current_user
+    build_demo_activities
 
-    if @activity.save
+    @activity = current_user.activities.build(activity_params)
+
+    if activity_saved?
       redirect_to activities_path, notice: 'Activity created!' # rubocop:disable Rails/I18nLocaleTexts
     else
       render :index, status: :unprocessable_content
@@ -55,6 +56,16 @@ class ActivitiesController < ApplicationController
 
   def activity_not_found
     redirect_to activities_path, alert: 'That activity does not exist.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
+  end
+
+  # Adding something is what perisists a visitor
+  # Saving the user saves the whole visible list
+  def activity_saved?
+    return @activity.save if current_user.persisted?
+    return false unless current_user.save
+
+    start_session_for(current_user)
+    true
   end
 
   def set_activity
