@@ -20,17 +20,18 @@
       <p>Need some inspiration?</p>
     <% end %>
 
+    <%# Prefetch would pick the suggestion on hover, so the click shows a stale roll. %>
     <%= link_to "From your list",
                 random_activities_path,
                 role: "button",
-                data: { turbo: false },
+                data: { turbo_prefetch: false },
                 aria: { label: "From your list" } %>
 
     <%= link_to "Random suggestion",
                 suggestion_activities_path,
                 role: "button",
                 class: 'secondary',
-                data: { turbo: false },
+                data: { turbo_prefetch: false },
                 aria: { label: "Random suggestion" } %>
   </article>
 </section>
