@@ -62,6 +62,14 @@ RSpec.describe '/activities', type: :request do
       it 'renders a response with 422 status' do
         expect(response).to have_http_status(:unprocessable_content)
       end
+
+      it 'keeps their list on the page instead of the empty state' do
+        expect(response.body).not_to include('Nothing here yet')
+      end
+
+      it 'leaves the rejected activity out of the list' do
+        expect(response.body.scan('id="activity_read-a-book"').count).to eq(1)
+      end
     end
   end
 

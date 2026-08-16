@@ -53,6 +53,8 @@ RSpec.describe 'Guests', type: :request do
   context 'when a visitor adds something they were already shown' do
     subject(:add_a_suggestion) { post activities_url, params: { activity: { name: suggestions.first } } }
 
+    let(:rejected_row_id) { %(id="activity_#{suggestions.first.parameterize}") }
+
     before do
       get activities_url
       add_a_suggestion
@@ -65,6 +67,14 @@ RSpec.describe 'Guests', type: :request do
 
     it 'persists nothing' do
       expect(User.count).to be_zero
+    end
+
+    it 'keeps the suggestions on the page instead of the empty state' do
+      expect(response.body).not_to include('Nothing here yet')
+    end
+
+    it 'leaves the rejected activity out of the list' do
+      expect(response.body.scan(rejected_row_id).count).to eq(1)
     end
   end
 

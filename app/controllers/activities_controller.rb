@@ -30,6 +30,7 @@ class ActivitiesController < ApplicationController
     if activity_saved?
       redirect_to activities_path, notice: 'Activity created!' # rubocop:disable Rails/I18nLocaleTexts
     else
+      @activities = list_without(@activity)
       render :index, status: :unprocessable_content
     end
   end
@@ -99,6 +100,10 @@ class ActivitiesController < ApplicationController
 
   def suggestions_not_on_the_list
     ACTIVITIES_LIST - @activities.map(&:name)
+  end
+
+  def list_without(candidate)
+    current_user.activities.reject { |activity| activity.equal?(candidate) }
   end
 
   def set_activities
