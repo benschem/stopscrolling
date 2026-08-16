@@ -6,9 +6,10 @@ RSpec.describe CleanupUnverifiedUsersJob, type: :job do
   subject(:cleanup_unverified_users) { described_class.perform_now }
 
   describe '#perform' do
-    let!(:stale_account) do
-      create(
+    let!(:stale_accounts) do
+      create_list(
         :account,
+        2,
         verified_at: nil,
         verification_sent_at: 8.days.ago,
         created_at: 8.days.ago
@@ -45,6 +46,7 @@ RSpec.describe CleanupUnverifiedUsersJob, type: :job do
     let!(:guest) { create(:user, created_at: 8.days.ago) }
 
     before do
+      allow(Rails.logger).to receive(:info)
       cleanup_unverified_users
     end
 
@@ -53,7 +55,7 @@ RSpec.describe CleanupUnverifiedUsersJob, type: :job do
     end
 
     it 'destroys the user behind an account that was never verified in time' do
-      expect(User.exists?(stale_account.user_id)).to be(false)
+      expect(User.where(id: stale_accounts.map(&:user_id))).to be_empty
     end
 
     it 'does not destroy freshly signed up users' do
@@ -66,6 +68,11 @@ RSpec.describe CleanupUnverifiedUsersJob, type: :job do
 
     it 'does not destroy verified users' do
       expect(User.exists?(verified_account.user_id)).to be(true)
+    end
+
+    it 'logs how many users it took' do
+      expect(Rails.logger).to have_received(:info)
+        .with("CleanupUnverifiedUsersJob deleted #{stale_accounts.count} unverified users")
     end
   end
 end

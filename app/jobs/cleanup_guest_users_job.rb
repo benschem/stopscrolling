@@ -5,6 +5,15 @@ class CleanupGuestUsersJob < ApplicationJob
   queue_as :maintenance
 
   def perform
-    User.abandoned_guests.find_each(&:destroy!)
+    deleted_count = 0
+
+    User.abandoned_guests.find_each do |guest|
+      guest.destroy!
+      deleted_count += 1
+    end
+
+    Rails.logger.info(
+      "CleanupGuestUsersJob deleted #{deleted_count} abandoned #{'guest'.pluralize(deleted_count)}"
+    )
   end
 end

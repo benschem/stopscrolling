@@ -5,6 +5,10 @@ class CleanupExpiredSessionsJob < ApplicationJob
   queue_as :maintenance
 
   def perform
-    Session.expired.delete_all
+    deleted_count = Session.expired.delete_all
+
+    Rails.logger.info(
+      "CleanupExpiredSessionsJob deleted #{deleted_count} expired #{'session'.pluralize(deleted_count)}"
+    )
   end
 end
