@@ -19,7 +19,12 @@
       </strong>
       <ul>
         <% @account.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+          <li>
+            <%= error.full_message %>
+            <% if error.attribute == :email_address && error.type == :taken %>
+              <%= link_to "Sign in instead", new_session_path(email_address: @account.email_address) %>
+            <% end %>
+          </li>
         <% end %>
       </ul>
     </article>
