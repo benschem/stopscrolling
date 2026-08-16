@@ -33,10 +33,6 @@ threads threads_count, threads_count
 workers 1
 worker_timeout 3600 if ENV.fetch('RAILS_ENV', 'development') == 'development'
 
-on_worker_boot do
-  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-end
-
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 # port ENV.fetch('PORT', 3000)
 
