@@ -59,7 +59,7 @@ RSpec.describe 'Activities index', type: :system do
     end
 
     it 'displays a random activity' do
-      expect(page).to have_css('.random strong', text: /book/i)
+      expect(page).to have_css('.answer strong', text: /book/i)
     end
   end
 end

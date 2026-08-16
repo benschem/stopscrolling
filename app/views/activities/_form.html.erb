@@ -1,6 +1,6 @@
 <%= form_with(model: activity) do |form| %>
   <% if activity.errors.any? %>
-    <article class="flash flash-error">
+    <div class="errors" role="alert">
       <strong>
         <%= pluralize(activity.errors.count, "error") %> prevented this activity from being saved:
       </strong>
@@ -9,14 +9,14 @@
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
-    </article>
+    </div>
   <% end %>
 
-  <fieldset role="group">
+  <div class="row">
     <%= form.text_field :name,
           placeholder: "Going to the gym, reading a book…",
           aria: { label: "Activity name" } %>
 
     <%= form.submit "Add to your list" %>
-  </fieldset>
+  </div>
 <% end %>

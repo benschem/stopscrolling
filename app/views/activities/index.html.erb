@@ -1,52 +1,47 @@
 <% content_for :title, "Stop Scrolling" %>
 
-<section class="intro">
-  <h1>Stop scrolling!</h1>
-  <p>
-    Ever catch yourself endlessly scrolling, wishing you were doing something more meaningful, but can’t decide what?
-  </p>
-</section>
+<section class="answer" data-draw="<%= draw_index(@random_activity) %>">
+  <% if @random_activity %>
+    <h1>
+      <%= random_cta %> <strong><%= @random_activity.name.downcase %></strong>.
+    </h1>
+  <% else %>
+    <h1>Get off your phone and do something else.</h1>
 
-<section class="random">
-  <article>
-    <h2>Get off your phone and do something else.</h2>
-    <% if @random_activity %>
-      <p>
-        <%= random_cta %> <strong><%= @random_activity.name.downcase %></strong>.
-      </p>
-    <% elsif @activities.blank? %>
-      <p>Add some activities to get inspired.</p>
-    <% else %>
-      <p>Need some inspiration?</p>
+    <% if @activities.blank? %>
+      <p>Add something below and it'll pick for you.</p>
     <% end %>
+  <% end %>
 
-    <%# These roll a die rather than fetch a fixed page, so they are POSTs, not links. Turbo only
-        morphs a redirect back to the exact url you were on, and these add ?suggestion=, so the
-        action it would infer is "advance". Saying "replace" is what keeps scroll and focus. %>
-    <div class="random-actions">
-      <%= button_to "From your list",
-                    random_activities_path,
-                    data: { turbo_action: "replace" },
-                    aria: { label: "From your list" } %>
+  <% unless current_user.persisted? %>
+    <p>
+      Ever catch yourself endlessly scrolling, wishing you were doing something more meaningful, but can’t decide what?
+    </p>
+  <% end %>
 
-      <%= button_to "Random suggestion",
-                    suggestion_activities_path,
-                    class: 'secondary',
-                    data: { turbo_action: "replace" },
-                    aria: { label: "Random suggestion" } %>
-    </div>
-  </article>
+  <%# These roll a die rather than fetch a fixed page, so they are POSTs, not links. Turbo only
+      morphs a redirect back to the exact url you were on, and these add ?suggestion=, so the
+      action it would infer is "advance". Saying "replace" is what keeps scroll and focus. %>
+  <div class="actions">
+    <%= button_to "From your list",
+                  random_activities_path,
+                  class: "primary",
+                  data: { turbo_action: "replace" },
+                  aria: { label: "From your list" } %>
+
+    <%= button_to "Random suggestion",
+                  suggestion_activities_path,
+                  data: { turbo_action: "replace" },
+                  aria: { label: "Random suggestion" } %>
+  </div>
 </section>
 
-<section class="add-activity">
-  <article>
-    <h2>What do you like doing?</h2>
-    <p>What do you wish you were doing more of?</p>
-    <%= render "form", activity: @activity %>
-  </article>
+<section class="compose">
+  <h2>What do you like doing?</h2>
+  <%= render "form", activity: @activity %>
 </section>
 
-<section class="activities">
+<section class="list">
   <% if current_user.persisted? %>
     <h2>Things you like doing.</h2>
   <% else %>
@@ -54,12 +49,10 @@
   <% end %>
 
   <% if @activities.present? %>
-    <ul class="activity-list">
+    <ul>
       <%= render @activities %>
     </ul>
   <% else %>
-    <p class="empty-state">
-      Nothing here yet. Add your first activity above.
-    </p>
+    <p>Nothing here yet. Add your first activity above.</p>
   <% end %>
 </section>

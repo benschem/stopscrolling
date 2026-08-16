@@ -1,130 +1,346 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
+/* stopscroll.ing
  *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
+ * It doesn't suggest, it instructs. Colour is sampled from vitreous enamel signage —
+ * flat, saturated, no gradient anywhere. Archivo's width axis does the condensing, the
+ * way a real sign is condensed to fit its plate. Each draw repaints the plate a
+ * different enamel colour (data-draw on the section), so a new answer is felt without
+ * any motion.
  *
- * Consider organizing styles into separate files for maintainability.
+ * Each component gets one class on its root and is styled from the inside by element,
+ * so the markup carries structure rather than names for it. Loaded after reset.css,
+ * which opens the `reset` layer.
  */
 
-/* To override Pico CSS variables: */
-/* :root {
-  --pico-primary: #0d6efd;
-  --pico-font-family: system-ui, sans-serif;
-} */
+@layer reset, tokens, base, layout, components;
 
-/* Layout rhythm */
-main {
-  margin-block: 3rem;
+/* Archivo, self-hosted. Two subsets: the browser only fetches latin-ext if a glyph in
+   that range actually appears, so carrying it costs nothing until someone types one. */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("archivo-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
 }
 
-section + section {
-  margin-top: 3rem;
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("archivo-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* Intro tone */
-.intro h1 {
-  font-size: 2.5rem;
-}
+@layer tokens {
+  :root {
+    --chalk: oklch(0.955 0.010 95);
+    --ground: light-dark(oklch(0.960 0.005 95), oklch(0.155 0.010 165));
+    --ink: light-dark(oklch(0.200 0.020 165), oklch(0.940 0.010 95));
+    --ink-soft: light-dark(oklch(0.470 0.020 165), oklch(0.700 0.010 95));
+    --hair: light-dark(oklch(0.800 0.012 165), oklch(0.330 0.012 165));
 
-.intro p {
-  max-width: 60ch;
-}
+    --enamel-green: oklch(0.400 0.075 165);
+    --enamel-red: oklch(0.470 0.180 28);
+    --enamel-blue: oklch(0.380 0.095 250);
+    --enamel-oxide: oklch(0.465 0.125 55);
+    --field: var(--enamel-green);
 
-/* Activity list */
-.activity-list {
-  padding-left: 0;
-  display: grid;
-  gap: 0.75rem;
-}
+    --display: "Archivo", system-ui, sans-serif;
 
-.activity-list li {
-  list-style: none !important;
-}
-
-.activity {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-/* Make the text feel intentional */
-.activity-name {
-  font-weight: 500;
-}
-
-/* Empty state */
-.empty-state {
-  opacity: 0.7;
-  font-style: italic;
-}
-/* Base flash styles */
-.flash {
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 500;
-  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* Light mode shadows (soft, subtle) */
-.flash {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-/* Success and error accents (light mode) */
-.flash-success {
-  background-color: #e6fffa; /* very light teal */
-  color: #065f46;
-  border-left: 4px solid #10b981;
-}
-
-.flash-error {
-  background-color: #fff5f5; /* very light pink */
-  color: #991b1b;
-  border-left: 4px solid #ef4444;
-}
-
-/* Dark mode tweaks */
-@media (prefers-color-scheme: dark) {
-  /* Dark background shadows (soft but visible) */
-  .flash {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    --measure: 54rem;
+    --pad: clamp(1.1rem, 4vw, 2.5rem);
   }
 
-  .flash-success {
-    background-color: #064e3b; /* dark teal background */
-    color: #a7f3d0; /* light teal text */
-    border-left-color: #10b981; /* accent remains visible */
+  [data-draw="1"] { --field: var(--enamel-red); }
+  [data-draw="2"] { --field: var(--enamel-blue); }
+  [data-draw="3"] { --field: var(--enamel-oxide); }
+}
+
+@layer base {
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--display);
   }
 
-  .flash-error {
-    background-color: #7f1d1d; /* dark red background */
-    color: #fecaca; /* light red text */
-    border-left-color: #ef4444; /* accent remains visible */
+  a { color: inherit; }
+
+  summary { cursor: pointer; }
+}
+
+@layer layout {
+  header,
+  footer,
+  .compose,
+  .list,
+  .auth {
+    width: min(100% - (var(--pad) * 2), var(--measure));
+    margin-inline: auto;
+  }
+
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.25rem;
+  }
+
+  main {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  footer {
+    padding-block: 2.5rem 4rem;
+    color: var(--ink-soft);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 }
 
-.random > p {
-  margin-block-start: 1rem;
-}
+@layer components {
+  header {
+    /* The wordmark is the only anchor that is a direct child; the rest live in the nav. */
+    > a {
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-stretch: 70%;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
 
-/* button_to renders a form each, which would otherwise stack them */
-.random-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
+    nav {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
 
-.random-actions form {
-  margin-block-end: 0;
-}
+    details {
+      position: relative;
 
-h1,
-h2,
-h3 {
-  margin-block-end: 0.8em !important;
+      > div {
+        position: absolute;
+        inset-inline-end: 0;
+        z-index: 10;
+        display: grid;
+        gap: 0.25rem;
+        width: max-content;
+        padding: 0.5rem;
+        background: var(--ground);
+        border: 2px solid var(--ink);
+      }
+
+      button { padding: 0.5rem; }
+    }
+  }
+
+  /* Full-bleed plate. Deliberately not centred — a sign is set to its own margin. */
+  .answer {
+    background: var(--field);
+    color: var(--chalk);
+    padding-block: clamp(1.75rem, 6vw, 4rem);
+    /* Bleeds to the viewport edge, but its contents line up with the column below it. */
+    padding-inline: max(var(--pad), calc((100% - var(--measure)) / 2));
+
+    /* The phrase leading up to the activity is the qualifier, the activity is the
+       destination. A sign separates those by weight and width, not by colour, so the
+       plate stays flat. The tint is support, not the signal. */
+    h1 {
+      font-size: clamp(2.25rem, 8vw, 5.5rem);
+      font-weight: 400;
+      font-stretch: 62%;
+      line-height: 0.95;
+      letter-spacing: -0.005em;
+      text-transform: uppercase;
+      text-wrap: balance;
+      color: color-mix(in oklab, var(--chalk) 80%, var(--field));
+    }
+
+    strong {
+      font-weight: 800;
+      font-stretch: 100%;
+      color: var(--chalk);
+    }
+
+    /* Direct children only, so anything added inside a block later opts in rather than
+       inheriting this by accident. Not opacity: this is body-size text, so it has to
+       hold 4.5:1 on every plate. */
+    > p {
+      max-width: 44ch;
+      margin-block-start: 1.25rem;
+      font-size: 1rem;
+      text-wrap: pretty;
+      color: color-mix(in oklab, var(--chalk) 92%, var(--field));
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-block-start: 2rem;
+    }
+
+    button {
+      padding: 0.75rem 1.25rem;
+      min-height: 44px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 2px solid var(--chalk);
+
+      &.primary {
+        background: var(--chalk);
+        color: var(--field);
+      }
+    }
+  }
+
+  .compose h2,
+  .list h2,
+  .auth h1 {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    padding-block-end: 0.5rem;
+    border-block-end: 2px solid var(--ink);
+    margin-block-end: 0.75rem;
+  }
+
+  .compose .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  :is(.compose, .auth) input:not([type="submit"]) {
+    flex: 1 1 16rem;
+    padding: 0.75rem;
+    min-height: 44px;
+    border: 2px solid var(--hair);
+
+    &:focus-visible { border-color: var(--ink); }
+  }
+
+  :is(.compose, .auth) input[type="submit"] {
+    padding: 0.75rem 1.25rem;
+    min-height: 44px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--ink);
+    color: var(--ground);
+  }
+
+  /* Departure board: one row per line, hairline rules, ruthless alignment. */
+  .list {
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 3rem;
+      border-block-end: 1px solid var(--hair);
+      font-size: 1.0625rem;
+      font-stretch: 82%;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    button {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--ink-soft);
+
+      &:hover, &:focus-visible { color: var(--enamel-red); }
+    }
+
+    /* The empty state, not the list rows. */
+    > p {
+      color: var(--ink-soft);
+      padding-block: 0.75rem;
+    }
+  }
+
+  /* Sign in, sign up, password reset. Same vocabulary as the compose row. */
+  .auth {
+    padding-block: 1.5rem;
+
+    form {
+      display: grid;
+      gap: 0.75rem;
+      max-width: 26rem;
+    }
+
+    .links {
+      display: grid;
+      gap: 0.5rem;
+      margin-block-start: 1.5rem;
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+  }
+
+  /* Validation errors, beside the field that produced them. */
+  .errors {
+    padding: 0.75rem;
+    margin-block-end: 0.75rem;
+    background: var(--enamel-red);
+    color: var(--chalk);
+    font-size: 0.875rem;
+  }
+
+  /* Fixed so a message is never scrolled past. */
+  .flashes {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 50;
+    display: grid;
+    pointer-events: none;
+
+    p {
+      padding: 0.85rem var(--pad);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--ink);
+      color: var(--ground);
+    }
+
+    /* The role already says which kind of message this is, so there is no second
+       class to keep in step with it. Notices dismiss themselves; alerts stay, because
+       auto-hiding something that went wrong is a bad trade. Under reduced motion the
+       reset collapses the duration but not the delay, so it jump-cuts instead. */
+    [role="status"] { animation: flash-dismiss 300ms ease-in 6s forwards; }
+
+    [role="alert"] {
+      background: var(--enamel-red);
+      color: var(--chalk);
+    }
+  }
+
+  @keyframes flash-dismiss {
+    to { opacity: 0; visibility: hidden; }
+  }
 }

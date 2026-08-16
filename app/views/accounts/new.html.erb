@@ -1,7 +1,8 @@
-<h1>Sign Up</h1>
+<section class="auth">
+  <h1>Sign up</h1>
 
-<% if @account.errors.any? %>
-    <article class="flash flash-error">
+  <% if @account.errors.any? %>
+    <div class="errors" role="alert">
       <strong>
         <%= pluralize(@account.errors.count, "error") %> prevented this account from being saved:
       </strong>
@@ -15,14 +16,26 @@
           </li>
         <% end %>
       </ul>
-    </article>
+    </div>
   <% end %>
 
-<%= form_with model: @account do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address" %><br>
-  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
-  <%= form.submit "Sign up" %>
-<% end %>
-<br>
+  <%= form_with model: @account do |form| %>
+    <%= form.email_field :email_address,
+          required: true,
+          autofocus: true,
+          autocomplete: "username",
+          placeholder: "Enter your email address" %>
 
-<%= link_to "Already have an account?", new_session_path %>
+    <%= form.password_field :password,
+          required: true,
+          autocomplete: "current-password",
+          placeholder: "Enter your password",
+          maxlength: 72 %>
+
+    <%= form.submit "Sign up" %>
+  <% end %>
+
+  <div class="links">
+    <%= link_to "Already have an account?", new_session_path %>
+  </div>
+</section>

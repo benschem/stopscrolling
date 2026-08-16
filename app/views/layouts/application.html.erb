@@ -3,6 +3,8 @@
   <head>
     <title><%= content_for(:title) || "Stop Scrolling" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%# Before any CSS, so the page doesn't flash light before the reset opts into dark. %>
+    <meta name="color-scheme" content="dark light">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="turbo-refresh-method" content="morph">
@@ -19,8 +21,7 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag "pico.min", data: { turbo_track: "reload" } %>
+    <%= stylesheet_link_tag "reset", data: { turbo_track: "reload" } %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
@@ -35,54 +36,38 @@
   </head>
 
   <body>
-    <header class="container">
-      <nav>
-        <ul>
-          <li>
-            <strong>
-              <%= link_to 'stopscroll.ing', root_path %>
-            </strong>
-          </li>
-        </ul>
-        <ul>
-          <% if signed_in? %>
-            <details class="dropdown">
-              <summary>
-                <small><%= current_account.email_address %></small>
-              </summary>
-              <ul dir="rtl">
-                <% if current_account.unverified? %>
-                  <li>
-                    <%= button_to 'Resend verification email',
-                            resend_verify_email_address_path,
-                            aria: { label: "Resend verification email" } %>
-                  </li>
-                <% end %>
-                <li>
-                  <%= button_to 'Sign out', session_path, method: :delete, class: "secondary outline" %>
-                </li>
-              </ul>
-            </details>
-          <% else %>
+    <%# Outside main so it can be fixed over the page rather than scrolled away from. %>
+    <%= render "shared/flash" %>
+
+    <header>
+      <%= link_to 'stopscroll.ing', root_path %>
+
+      <nav aria-label="Account">
+        <% if signed_in? %>
+          <details>
+            <summary><%= current_account.email_address %></summary>
             <div>
-              <li><%= link_to 'Sign up', new_account_path  %></li>
-              <li><%= link_to 'Sign in', new_session_path, role: "button"  %></li>
+              <% if current_account.unverified? %>
+                <%= button_to 'Resend verification email',
+                        resend_verify_email_address_path,
+                        aria: { label: "Resend verification email" } %>
+              <% end %>
+              <%= button_to 'Sign out', session_path, method: :delete %>
             </div>
-          <% end %>
-        </ul>
+          </details>
+        <% else %>
+          <%= link_to 'Sign up', new_account_path %>
+          <%= link_to 'Sign in', new_session_path %>
+        <% end %>
       </nav>
     </header>
 
-    <main class="container">
-      <%= render "shared/flash" %>
-
+    <main>
       <%= yield %>
     </main>
 
-    <footer class="container">
-      <small>
-        A tiny reminder that boredom is an opportunity.
-      </small>
+    <footer>
+      <small>A tiny reminder that boredom is an opportunity.</small>
     </footer>
   </body>
 </html>

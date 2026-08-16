@@ -1,16 +1,9 @@
 <li id="<%= activity_dom_id activity %>">
-  <article class="activity">
-    <span class="activity-name">
-      <%= activity.name.capitalize %>
-    </span>
+  <span><%= activity.name.capitalize %></span>
 
-    <span class="activity-actions">
-      <%# Use the full path (not just `activity`) to send an unsaved record %>
-      <%= button_to "Delete",
+  <%# Use the full path (not just `activity`) to send an unsaved record %>
+  <%= button_to "Delete",
         activity_path(activity),
         method: :delete,
-        class: "secondary outline",
         form: { data: { turbo_confirm: "Remove this activity?" } } %>
-    </span>
-  </article>
 </li>

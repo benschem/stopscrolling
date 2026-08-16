@@ -40,5 +40,11 @@ module Stopscrolling
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Leave a field with errors alone. The default wraps it in a div, which on a
+    # re-render silently makes the input a grandchild of its flex row and stops it
+    # filling the width. Errors are already listed above the form, so nothing reads
+    # the wrapper.
+    config.action_view.field_error_proc = ->(html_tag, _instance) { html_tag }
   end
 end
