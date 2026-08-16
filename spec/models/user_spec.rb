@@ -11,6 +11,20 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:sessions).dependent(:destroy) }
   end
 
+  describe '#activities' do
+    subject(:user) { create(:user) }
+
+    before do
+      create(:activity, user: user, name: 'Zebra spotting')
+      create(:activity, user: user, name: 'Amateur radio')
+      create(:activity, user: user, name: 'Making bread')
+    end
+
+    it 'keeps them in the order they were added' do
+      expect(user.activities.map(&:name)).to eq(['Zebra spotting', 'Amateur radio', 'Making bread'])
+    end
+  end
+
   describe '#signed_up?' do
     context 'when the user has an account' do
       subject(:user) { create(:user, :signed_up) }
