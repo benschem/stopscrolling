@@ -1,15 +1,10 @@
 <% content_for :title, "Stop Scrolling" %>
 
 <% user_has_saved_activites = current_user.activities.present? %>
+<% headline = headline_for(@drawn_activity) %>
 
-<section class="answer" data-draw="<%= draw_index(@drawn_activity) %>">
-  <% if @drawn_activity %>
-    <h1>
-      <%= random_cta %> <strong><%= @drawn_activity.name.downcase %></strong>.
-    </h1>
-  <% else %>
-    <h1>Get off your phone and do something else.</h1>
-  <% end %>
+<section class="answer" data-draw="<%= draw_index(@drawn_activity) %>" data-length="<%= headline_size(headline) %>">
+  <h1><%= headline %></h1>
 
   <% unless user_has_saved_activites %>
     <p>Add something below to pick from what you like.</p>

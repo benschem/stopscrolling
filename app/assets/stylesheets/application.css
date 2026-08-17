@@ -150,6 +150,13 @@
 
   /* Full-bleed plate. Deliberately not centred — a sign is set to its own margin. */
   .answer {
+    display: flex;
+    flex-direction: column;
+    /* Fixed height, so the buttons stay under the thumb as you flick through draws instead
+       of walking down the page behind a longer answer. The floor has to clear the tallest
+       headline the tiers can produce (a three-line medium one, 459px at full size) or the
+       content wins and the plate goes back to changing size per draw. */
+    min-height: clamp(30rem, 58svh, 34rem);
     background: var(--field);
     color: var(--chalk);
     padding-block: clamp(1.75rem, 6vw, 4rem);
@@ -160,8 +167,10 @@
        destination. Weight and tint carry that, at one width — mixing widths mid-sentence
        read as a mistake rather than a decision. 60% is as dim as the qualifier can go
        and still clear 3:1 on every plate at this size. */
+    /* One auto here and one on .actions splits the slack the fixed height leaves in two,
+       which centres the headline (and the line under it) however many lines it runs to. */
     h1 {
-      font-size: clamp(2.25rem, 8vw, 5.5rem);
+      margin-block-start: auto;
       font-weight: 400;
       font-stretch: 62%;
       line-height: 0.95;
@@ -170,6 +179,12 @@
       text-wrap: balance;
       color: color-mix(in oklab, var(--chalk) 60%, var(--field));
     }
+
+    /* The plate does not grow, so the type gives. Which tier applies is decided by the
+       length of the whole headline, in ApplicationHelper#headline_size. */
+    &[data-length="short"] h1 { font-size: clamp(2.75rem, 10vw, 6.5rem); }
+    &[data-length="medium"] h1 { font-size: clamp(2.25rem, 8vw, 5.5rem); }
+    &[data-length="long"] h1 { font-size: clamp(1.75rem, 6vw, 4rem); }
 
     strong {
       font-weight: 800;
@@ -187,11 +202,14 @@
       color: color-mix(in oklab, var(--chalk) 92%, var(--field));
     }
 
+    /* auto, not a fixed margin: the buttons sit on the bottom of the plate whatever the
+       headline above them does. */
     .actions {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-block-start: 2rem;
+      margin-block-start: auto;
+      padding-block-start: 2rem;
     }
 
     button {
