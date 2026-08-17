@@ -81,7 +81,8 @@
   footer,
   .compose,
   .list,
-  .auth {
+  .auth,
+  .policy {
     width: min(100% - (var(--pad) * 2), var(--measure));
     margin-inline: auto;
   }
@@ -101,6 +102,11 @@
   }
 
   footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
     padding-block: 2.5rem 4rem;
     color: var(--ink-soft);
     font-size: 0.875rem;
@@ -228,9 +234,15 @@
     }
   }
 
+  footer nav {
+    display: flex;
+    gap: 1rem;
+  }
+
   .compose h2,
   .list h2,
-  .auth h1 {
+  .auth h1,
+  .policy h2 {
     font-size: 0.875rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -325,6 +337,46 @@
       font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
+    }
+  }
+
+  /* Prose, set narrower than the column it sits in so the lines stay readable. The section
+     headings borrow the compose/list vocabulary, so the page reads as the same signage. */
+  .policy {
+    padding-block: 1.5rem;
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 800;
+      font-stretch: 70%;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    h2 { margin-block-start: 2.5rem; }
+
+    p, li {
+      font-size: 1.0625rem;
+      line-height: 1.5;
+      text-wrap: pretty;
+    }
+
+    p { margin-block-end: 0.75rem; }
+
+    ul {
+      display: grid;
+      gap: 0.5rem;
+      margin-block-end: 1.25rem;
+      padding-inline-start: 1.25rem;
+      list-style: disc;
+    }
+
+    .updated {
+      margin-block: 0.5rem 2rem;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-soft);
     }
   }
 

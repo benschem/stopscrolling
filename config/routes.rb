@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root 'activities#index'
 
+  get 'privacy' => 'pages#privacy'
+
   resource :session
   resources :accounts, only: %i[new create]
   resources :passwords, param: :token
