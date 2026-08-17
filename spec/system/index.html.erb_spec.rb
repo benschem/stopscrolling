@@ -45,7 +45,7 @@ RSpec.describe 'Activities index', type: :system do
 
   context 'when an activity is deleted' do
     before do
-      click_button 'Remove', match: :first
+      click_button 'Remove read a book'
     end
 
     it 'removes it from the page' do

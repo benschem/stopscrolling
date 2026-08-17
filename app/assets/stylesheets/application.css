@@ -273,11 +273,15 @@
       letter-spacing: 0.02em;
     }
 
+    /* A glyph rather than a word, so it is sized to be tappable and to sit on the
+       optical centre of the row instead of on a text baseline. */
     button {
-      padding: 0.75rem 0.5rem;
-      font-size: 0.6875rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      min-height: 44px;
+      font-size: 1.5rem;
+      line-height: 1;
       color: var(--ink-soft);
 
       &:hover, &:focus-visible { color: var(--enamel-red); }
