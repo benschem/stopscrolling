@@ -86,8 +86,8 @@ RSpec.describe '/activities', type: :request do
         expect(response).to have_http_status(:unprocessable_content)
       end
 
-      it 'keeps their list on the page instead of the empty state' do
-        expect(response.body).not_to include('Nothing here yet')
+      it 'keeps their list on the page' do
+        expect(response.body).to include('Likes')
       end
 
       it 'leaves the rejected activity out of the list' do

@@ -26,8 +26,6 @@ class ActivitiesController < ApplicationController
 
   # POST /activities
   def create
-    build_demo_activities
-
     @activity = current_user.activities.build(activity_params)
 
     if activity_saved?
@@ -40,7 +38,7 @@ class ActivitiesController < ApplicationController
 
   # DELETE /activities/1
   def destroy
-    discard_activity
+    @activity.destroy!
     redirect_to root_path, notice: 'Removed', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   end
 
@@ -74,26 +72,7 @@ class ActivitiesController < ApplicationController
   end
 
   def set_activity
-    name = params.expect(:id)
-
-    @activity = if current_user.persisted?
-                  current_user.activities.find_by!(name: name)
-                else
-                  find_demo_activity(name)
-                end
-  end
-
-  def find_demo_activity(name)
-    build_demo_activities
-
-    current_user.activities.find { |activity| activity.name == name } ||
-      raise(ActiveRecord::RecordNotFound)
-  end
-
-  def discard_activity
-    return demo_activities.remove(@activity.name) unless @activity.persisted?
-
-    @activity.destroy!
+    @activity = current_user.activities.find_by!(name: params.expect(:id))
   end
 
   def list_without(candidate)
@@ -101,8 +80,6 @@ class ActivitiesController < ApplicationController
   end
 
   def set_activities
-    build_demo_activities
-
     @activities = current_user.activities
   end
 

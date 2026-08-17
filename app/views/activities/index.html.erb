@@ -1,5 +1,7 @@
 <% content_for :title, "Stop Scrolling" %>
 
+<% user_has_saved_activites = current_user.activities.present? %>
+
 <section class="answer" data-draw="<%= draw_index(@drawn_activity) %>">
   <% if @drawn_activity %>
     <h1>
@@ -7,22 +9,18 @@
     </h1>
   <% else %>
     <h1>Get off your phone and do something else.</h1>
-
-    <% if @activities.blank? %>
-      <p>Add something below and it'll pick for you.</p>
-    <% end %>
   <% end %>
 
-  <%# Drawing from their own list is only a distinct offer once they have one. Before that
-      both buttons pull from the same deck, which is a choice with nothing behind it. %>
-  <% own_list = current_user.persisted? && @activities.present? %>
+  <% unless user_has_saved_activites %>
+    <p>Add something below to pick from what you like.</p>
+  <% end %>
 
   <%# These deal from a shuffled deck rather than fetch a fixed page, so they are POSTs, not
       links. Turbo only morphs a redirect back to the exact url you were on, and these add
       ?activity_name=, so the action it would infer is "advance". Saying "replace" is what
       keeps scroll and focus. %>
   <div class="actions">
-    <% if own_list %>
+    <% if user_has_saved_activites %>
       <%= button_to "Something else",
                     pick_activities_path,
                     class: "primary",
@@ -31,7 +29,7 @@
 
     <%= button_to "Go rogue",
                   rogue_activities_path,
-                  class: ("primary" unless own_list),
+                  class: ("primary" unless user_has_saved_activites),
                   data: { turbo_action: "replace" } %>
   </div>
 </section>
@@ -41,14 +39,12 @@
   <%= render "form", activity: @activity %>
 </section>
 
-<section class="list">
-  <h2>Likes</h2>
+<% if user_has_saved_activites %>
+  <section class="list">
+    <h2>Likes</h2>
 
-  <% if @activities.present? %>
     <ul>
       <%= render @activities %>
     </ul>
-  <% else %>
-    <p>Nothing here yet. Add something you like doing.</p>
-  <% end %>
-</section>
+  </section>
+<% end %>

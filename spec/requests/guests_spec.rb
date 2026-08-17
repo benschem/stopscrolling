@@ -13,11 +13,9 @@ RSpec.describe 'Guests', type: :request do
     subject(:add_activity) { post activities_url, params: { activity: { name: 'Go for a walk' } } }
 
     let(:guest) { User.sole }
-    let(:suggested_names) { suggestions }
 
     before do
       get activities_url
-      suggested_names # pin them, before adding clears the session
       add_activity
     end
 
@@ -29,27 +27,21 @@ RSpec.describe 'Guests', type: :request do
       expect(guest).not_to be_signed_up
     end
 
-    it 'saves the whole visible list, not just what they typed' do
-      expect(guest.activities.pluck(:name)).to match_array(suggested_names + ['Go for a walk'])
+    it 'saves what they typed and nothing else' do
+      expect(guest.activities.pluck(:name)).to eq(['Go for a walk'])
     end
 
     it 'starts a session so they are recognised next time' do
       expect(guest.sessions.count).to eq(1)
     end
-
-    it 'stops suggesting, now that the list is theirs' do
-      expect(suggestions).to be_nil
-    end
   end
 
-  context 'when a visitor adds something they were already shown' do
-    subject(:add_a_suggestion) { post activities_url, params: { activity: { name: suggestions.first } } }
-
-    let(:rejected_row_id) { %(id="activity_#{suggestions.first.parameterize}") }
+  context 'when a visitor adds the same thing twice' do
+    let(:rejected_row_id) { 'id="activity_go-for-a-walk"' }
 
     before do
-      get activities_url
-      add_a_suggestion
+      add_as_a_visitor('Go for a walk')
+      post activities_url, params: { activity: { name: 'Go for a walk' } }
     end
 
     it 'refuses it with a validation error', :aggregate_failures do
@@ -57,12 +49,8 @@ RSpec.describe 'Guests', type: :request do
       expect(response.body).to include('has already been taken')
     end
 
-    it 'persists nothing' do
-      expect(User.count).to be_zero
-    end
-
-    it 'keeps the suggestions on the page instead of the empty state' do
-      expect(response.body).not_to include('Nothing here yet')
+    it 'saves it once' do
+      expect(User.sole.activities.pluck(:name)).to eq(['Go for a walk'])
     end
 
     it 'leaves the rejected activity out of the list' do
@@ -70,22 +58,19 @@ RSpec.describe 'Guests', type: :request do
     end
   end
 
-  context 'when a visitor asks for a suggestion' do
-    subject(:ask_for_a_suggestion) { post rogue_activities_url }
-
-    # One more name than a demo list holds, so exactly one is left to suggest
-    let(:suggestion_pile) { Array.new(DemoActivityList::SIZE + 1) { |index| "Suggestion #{index}" } }
-    let(:only_name_not_yet_shown) { (suggestion_pile - suggestions).sole }
-
+  context 'when a visitor goes rogue' do
     before do
-      stub_const('SEEDED_ACTIVITIES', suggestion_pile)
-      get activities_url
-      ask_for_a_suggestion
+      stub_const('SEEDED_ACTIVITIES', ['Bread making'])
+      post rogue_activities_url
       follow_redirect!
     end
 
-    it 'offers something they were not already shown' do
-      expect(response.body).to include(only_name_not_yet_shown.downcase)
+    it 'offers them something' do
+      expect(response.body).to include('bread making')
+    end
+
+    it 'saves nothing' do
+      expect(User.count).to be_zero
     end
   end
 
@@ -101,10 +86,6 @@ RSpec.describe 'Guests', type: :request do
     it 'shows them the list they saved' do
       expect(response.body).to include('Go for a walk')
     end
-
-    it 'suggests nothing over the top of it' do
-      expect(suggestions).to be_nil
-    end
   end
 
   context 'when a guest comes back after the session has expired' do
@@ -114,10 +95,6 @@ RSpec.describe 'Guests', type: :request do
       add_as_a_visitor('Go for a walk')
       travel(Session::EXPIRES_IN + 1.day)
       come_back
-    end
-
-    it 'treats them as a visitor again' do
-      expect(suggestions.size).to eq(DemoActivityList::SIZE)
     end
 
     it 'no longer shows the list they saved' do
@@ -177,10 +154,6 @@ RSpec.describe 'Guests', type: :request do
       expect(guest.activities.reload).to be_empty
     end
 
-    it 'suggests nothing over the top of it' do
-      expect(suggestions).to be_nil
-    end
-
     it 'keeps the user they became' do
       expect(User.count).to eq(1)
     end
@@ -212,6 +185,20 @@ RSpec.describe 'Guests', type: :request do
     it 'rotates their session rather than adding another', :aggregate_failures do
       expect(Session.count).to eq(1)
       expect(Session.sole).not_to eq(session_before_signing_up)
+    end
+  end
+
+  context 'when a visitor signs up without adding anything' do
+    let(:email_address) { 'visitor@example.com' }
+    let(:new_account) { Account.find_by(email_address: email_address) }
+
+    before do
+      get activities_url
+      sign_up(email_address: email_address)
+    end
+
+    it 'starts them off with an empty list' do
+      expect(new_account.user.activities).to be_empty
     end
   end
 

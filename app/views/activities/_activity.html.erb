@@ -1,9 +1,9 @@
 <li id="<%= activity_dom_id activity %>">
   <span><%= activity.name.capitalize %></span>
 
-  <%# Use the full path (not just `activity`) to send an unsaved record %>
-  <%= button_to "Remove",
+  <%= button_to "×",
         activity_path(activity),
         method: :delete,
+        aria: { label: "Remove #{activity.name.downcase}" },
         form: { data: { turbo_confirm: "Remove #{activity.name.downcase}?" } } %>
 </li>

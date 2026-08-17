@@ -7,8 +7,6 @@
 module SessionManagement
   extend ActiveSupport::Concern
 
-  include DemoActivities
-
   included do
     before_action :resume_session
   end
@@ -55,11 +53,8 @@ module SessionManagement
     )
   end
 
-  # Signing in rotates the session through here too, so suggestions are discarded rather than
-  # laid over the list of the account being signed in to.
   def terminate_session
     forget_session(Current.session)
-    demo_activities.clear
     Deck.clear(session)
     Current.session = nil
     Current.user = unsaved_visitor

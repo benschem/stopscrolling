@@ -282,12 +282,6 @@
 
       &:hover, &:focus-visible { color: var(--enamel-red); }
     }
-
-    /* The empty state, not the list rows. */
-    > p {
-      color: var(--ink-soft);
-      padding-block: 0.75rem;
-    }
   }
 
   /* Sign in, sign up, password reset. Same vocabulary as the compose row. */

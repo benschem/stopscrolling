@@ -23,6 +23,18 @@ RSpec.describe 'Signed out access', type: :request do
     end
   end
 
+  describe 'a first visit' do
+    before { get activities_url }
+
+    it 'starts them with an empty list' do
+      expect(response.body).not_to include('<li id="activity_')
+    end
+
+    it 'leaves the list heading off until they have something to head' do
+      expect(response.body).not_to include('Likes')
+    end
+  end
+
   describe 'POST /activities/pick' do
     before do
       post pick_activities_url
