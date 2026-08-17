@@ -337,21 +337,27 @@
     font-size: 0.9375rem;
   }
 
-  /* Fixed so a message is never scrolled past. */
+  /* Fixed to the bottom corner: never scrolled past, and out of the way of the answer
+     plate and the field they were typing in when it fired. */
   .flashes {
     position: fixed;
-    inset-block-start: 0;
-    inset-inline: 0;
+    inset-block-end: var(--pad);
+    inset-inline-end: var(--pad);
     z-index: 50;
     display: grid;
+    gap: 0.5rem;
+    justify-items: end;
+    /* Shrink-wraps its message, but never crowds a narrow screen edge to edge. */
+    max-width: min(24rem, calc(100% - (var(--pad) * 2)));
     pointer-events: none;
 
     p {
-      padding: 0.85rem var(--pad);
-      font-size: 0.875rem;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.8125rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
+      text-wrap: balance;
       background: var(--ink);
       color: var(--ground);
     }
