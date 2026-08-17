@@ -103,7 +103,7 @@
   footer {
     padding-block: 2.5rem 4rem;
     color: var(--ink-soft);
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
@@ -113,7 +113,7 @@
   header {
     /* The wordmark is the only anchor that is a direct child; the rest live in the nav. */
     > a {
-      font-size: 1.25rem;
+      font-size: 1.375rem;
       font-weight: 800;
       font-stretch: 70%;
       text-transform: uppercase;
@@ -124,7 +124,7 @@
     nav {
       display: flex;
       gap: 1rem;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
@@ -154,9 +154,9 @@
     flex-direction: column;
     /* Fixed height, so the buttons stay under the thumb as you flick through draws instead
        of walking down the page behind a longer answer. The floor has to clear the tallest
-       headline the tiers can produce (a three-line medium one, 459px at full size) or the
-       content wins and the plate goes back to changing size per draw. */
-    min-height: clamp(30rem, 58svh, 34rem);
+       headline the tiers can produce, plus the line under it on a first visit (507px at
+       full size), or the content wins and the plate goes back to changing size per draw. */
+    min-height: clamp(32rem, 58svh, 34rem);
     background: var(--field);
     color: var(--chalk);
     padding-block: clamp(1.75rem, 6vw, 4rem);
@@ -197,7 +197,7 @@
     > p {
       max-width: 44ch;
       margin-block-start: 1.25rem;
-      font-size: 1rem;
+      font-size: 1.125rem;
       text-wrap: pretty;
       color: color-mix(in oklab, var(--chalk) 92%, var(--field));
     }
@@ -215,7 +215,7 @@
     button {
       padding: 0.75rem 1.25rem;
       min-height: 44px;
-      font-size: 0.875rem;
+      font-size: 0.9375rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -231,7 +231,7 @@
   .compose h2,
   .list h2,
   .auth h1 {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -247,6 +247,7 @@
        than breaking mid-clause. It still wraps on a narrow screen. */
     max-width: 76ch;
     margin-block-end: 0.75rem;
+    font-size: 1.0625rem;
     color: var(--ink-soft);
     text-wrap: pretty;
   }
@@ -260,6 +261,7 @@
   :is(.compose, .auth) input:not([type="submit"]) {
     flex: 1 1 16rem;
     padding: 0.75rem;
+    font-size: 1.0625rem;
     min-height: 44px;
     border: 2px solid var(--hair);
 
@@ -285,7 +287,7 @@
       gap: 1rem;
       min-height: 3rem;
       border-block-end: 1px solid var(--hair);
-      font-size: 1.0625rem;
+      font-size: 1.1875rem;
       font-stretch: 82%;
       text-transform: uppercase;
       letter-spacing: 0.02em;
@@ -320,7 +322,7 @@
       display: grid;
       gap: 0.5rem;
       margin-block-start: 1.5rem;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
@@ -332,7 +334,7 @@
     margin-block-end: 0.75rem;
     background: var(--enamel-red);
     color: var(--chalk);
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
   }
 
   /* Fixed so a message is never scrolled past. */
@@ -346,7 +348,7 @@
 
     p {
       padding: 0.85rem var(--pad);
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
