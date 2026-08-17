@@ -32,6 +32,6 @@ class DemoActivityList
 
   # As a visitor, deleting all activities gets you a fresh set, not an empty list
   def refill_if_empty
-    session[KEY] = ACTIVITIES_LIST.sample(SIZE) if session[KEY].blank?
+    session[KEY] = SEEDED_ACTIVITIES.sample(SIZE) if session[KEY].blank?
   end
 end

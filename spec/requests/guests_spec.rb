@@ -40,14 +40,6 @@ RSpec.describe 'Guests', type: :request do
     it 'stops suggesting, now that the list is theirs' do
       expect(suggestions).to be_nil
     end
-
-    context 'when they look at the list afterwards' do
-      before { get activities_url }
-
-      it 'heads it as their own' do
-        expect(response.body).to include('Things you like doing')
-      end
-    end
   end
 
   context 'when a visitor adds something they were already shown' do
@@ -79,14 +71,14 @@ RSpec.describe 'Guests', type: :request do
   end
 
   context 'when a visitor asks for a suggestion' do
-    subject(:ask_for_a_suggestion) { post suggestion_activities_url }
+    subject(:ask_for_a_suggestion) { post rogue_activities_url }
 
     # One more name than a demo list holds, so exactly one is left to suggest
-    let(:suggestion_pool) { Array.new(DemoActivityList::SIZE + 1) { |index| "Suggestion #{index}" } }
-    let(:only_name_not_yet_shown) { (suggestion_pool - suggestions).sole }
+    let(:suggestion_pile) { Array.new(DemoActivityList::SIZE + 1) { |index| "Suggestion #{index}" } }
+    let(:only_name_not_yet_shown) { (suggestion_pile - suggestions).sole }
 
     before do
-      stub_const('ACTIVITIES_LIST', suggestion_pool)
+      stub_const('SEEDED_ACTIVITIES', suggestion_pile)
       get activities_url
       ask_for_a_suggestion
       follow_redirect!

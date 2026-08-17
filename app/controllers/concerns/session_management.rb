@@ -60,6 +60,7 @@ module SessionManagement
   def terminate_session
     forget_session(Current.session)
     demo_activities.clear
+    Deck.clear(session)
     Current.session = nil
     Current.user = unsaved_visitor
   end

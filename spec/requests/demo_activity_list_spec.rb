@@ -14,10 +14,6 @@ RSpec.describe 'Demo activity list', type: :request do
       it 'shows each of them, addressed by name' do
         expect(response.body).to include(*suggestions.map { |name| activity_path(name) })
       end
-
-      it 'heads the list as suggestions rather than as their own' do
-        expect(response.body).to include('Things you could be doing')
-      end
     end
 
     context 'when signed in' do
@@ -33,10 +29,6 @@ RSpec.describe 'Demo activity list', type: :request do
       it 'shows the empty state instead' do
         expect(response.body).to include('Nothing here yet')
       end
-
-      it 'heads the list as their own' do
-        expect(response.body).to include('Things you like doing')
-      end
     end
   end
 
@@ -46,11 +38,11 @@ RSpec.describe 'Demo activity list', type: :request do
     end
 
     it 'saves nothing when asking for something from the list' do
-      expect { post random_activities_url }.not_to change(Activity, :count)
+      expect { post pick_activities_url }.not_to change(Activity, :count)
     end
 
-    it 'saves nothing when asking for a suggestion' do
-      expect { post suggestion_activities_url }.not_to change(Activity, :count)
+    it 'saves nothing when going rogue' do
+      expect { post rogue_activities_url }.not_to change(Activity, :count)
     end
   end
 

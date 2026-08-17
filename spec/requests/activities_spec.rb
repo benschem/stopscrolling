@@ -21,22 +21,22 @@ RSpec.describe '/activities', type: :request do
     end
   end
 
-  describe 'GET /index with a suggestion in the url' do
-    subject(:request) { get root_url(suggestion: suggested_name) }
+  describe 'GET /index with an activity name in the url' do
+    subject(:request) { get root_url(activity_name: drawn_name) }
 
-    let(:suggested_name) { 'Read a book' }
+    let(:drawn_name) { 'Read a book' }
 
     before do
       create(:activity, user: user, name: 'Read a book')
       request
     end
 
-    it 'shows the suggestion' do
+    it 'shows what was drawn' do
       expect(response.body).to include('read a book')
     end
 
-    context 'when the url names something nobody could have suggested' do
-      let(:suggested_name) { 'Something made up' }
+    context 'when the url names something nobody could have drawn' do
+      let(:drawn_name) { 'Something made up' }
 
       it 'ignores it' do
         expect(response.body).not_to include('something made up')
@@ -179,32 +179,32 @@ RSpec.describe '/activities', type: :request do
     end
   end
 
-  describe 'POST /activities/random' do
-    subject(:request) { post random_activities_url }
+  describe 'POST /activities/pick' do
+    subject(:request) { post pick_activities_url }
 
     before do
       create(:activity, user: user, name: 'Read a book')
       request
     end
 
-    it 'redirects to a url naming what it picked' do
-      expect(response).to redirect_to(root_url(suggestion: 'Read a book'))
+    it 'redirects to a url naming what it drew' do
+      expect(response).to redirect_to(root_url(activity_name: 'Read a book'))
     end
   end
 
-  describe 'POST /activities/suggestion' do
-    subject(:request) { post suggestion_activities_url }
+  describe 'POST /activities/rogue' do
+    subject(:request) { post rogue_activities_url }
 
-    let(:suggestion_pool) { ACTIVITIES_LIST }
+    let(:rogue_deck) { SEEDED_ACTIVITIES }
 
     before do
-      stub_const('ACTIVITIES_LIST', suggestion_pool)
+      stub_const('SEEDED_ACTIVITIES', rogue_deck)
       create(:activity, user: user, name: 'Read a book')
       request
     end
 
-    context 'when there is something left to suggest' do
-      let(:suggestion_pool) { ['Read a book', 'Go for a walk'] }
+    context 'when there is something left to draw' do
+      let(:rogue_deck) { ['Read a book', 'Go for a walk'] }
 
       before { follow_redirect! }
 
@@ -216,17 +216,17 @@ RSpec.describe '/activities', type: :request do
         expect(response.body).to include('Read a book')
       end
 
-      it 'suggests the one they do not have yet' do
+      it 'draws the one they do not have yet' do
         expect(response.body).to include('go for a walk')
       end
     end
 
     context 'when their list already has everything we could suggest' do
-      let(:suggestion_pool) { ['Read a book'] }
+      let(:rogue_deck) { ['Read a book'] }
 
-      it 'says so instead of suggesting a duplicate', :aggregate_failures do
+      it 'says so instead of drawing a duplicate', :aggregate_failures do
         expect(response).to redirect_to(root_url)
-        expect(flash[:notice]).to eq("You've already got everything we can think of.")
+        expect(flash[:notice]).to include('everything we can think of')
       end
     end
   end

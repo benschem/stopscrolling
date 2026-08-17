@@ -14,7 +14,7 @@ RSpec.describe DemoActivityList, type: :model do
       end
 
       it 'picks them from the pre-seeded activities list' do
-        expect(ACTIVITIES_LIST).to include(*demo_list.names)
+        expect(SEEDED_ACTIVITIES).to include(*demo_list.names)
       end
     end
 

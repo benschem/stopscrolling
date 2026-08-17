@@ -24,12 +24,12 @@ RSpec.describe ActivitiesController, type: :routing do
       expect(delete: '/activities/Cook%2Fbake').to route_to('activities#destroy', id: 'Cook/bake')
     end
 
-    it 'routes to #random' do
-      expect(post: '/activities/random').to route_to('activities#random')
+    it 'routes to #pick' do
+      expect(post: '/activities/pick').to route_to('activities#pick')
     end
 
-    it 'routes to #suggestion' do
-      expect(post: '/activities/suggestion').to route_to('activities#suggestion')
+    it 'routes to #rogue' do
+      expect(post: '/activities/rogue').to route_to('activities#rogue')
     end
   end
 end

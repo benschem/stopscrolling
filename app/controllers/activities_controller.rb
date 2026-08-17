@@ -2,9 +2,11 @@
 
 # Activities Controller
 class ActivitiesController < ApplicationController
-  NOTHING_LEFT_TO_SUGGEST = "You've already got everything we can think of."
+  include Drawing
 
-  allow_signed_out_access only: %i[index random suggestion create destroy]
+  NOTHING_LEFT_TO_SUGGEST = 'Your list already has everything we can think of!'
+
+  allow_signed_out_access only: %i[index create destroy pick rogue]
 
   rescue_from ActiveRecord::RecordNotFound, with: :activity_not_found
 
@@ -14,12 +16,12 @@ class ActivitiesController < ApplicationController
   }
 
   before_action :set_activity, only: %i[destroy]
-  before_action :set_activities, only: %i[index random suggestion]
+  before_action :set_activities, only: %i[index pick rogue]
 
   # GET /activities
   def index
     @activity = Activity.new
-    @random_activity = suggestion_named_in_the_url
+    @drawn_activity = activity_from_url
   end
 
   # POST /activities
@@ -42,32 +44,20 @@ class ActivitiesController < ApplicationController
     redirect_to root_path, notice: 'Removed', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
   end
 
-  # POST /activities/random
-  def random
-    redirect_to root_path(suggestion: @activities.sample&.name), status: :see_other
+  # POST /activities/pick
+  def pick
+    redirect_to root_path(activity_name: user_deck.draw), status: :see_other
   end
 
-  # POST /activities/suggestion
-  def suggestion
-    suggested_name = suggestions_not_on_the_list.sample
+  # POST /activities/rogue
+  def rogue
+    rogue_activity_name = rogue_deck.draw
+    return redirect_to root_path, notice: NOTHING_LEFT_TO_SUGGEST, status: :see_other if rogue_activity_name.nil?
 
-    return redirect_to root_path, notice: NOTHING_LEFT_TO_SUGGEST, status: :see_other if suggested_name.nil?
-
-    redirect_to root_path(suggestion: suggested_name), status: :see_other
+    redirect_to root_path(activity_name: rogue_activity_name), status: :see_other
   end
 
   private
-
-  def suggestion_named_in_the_url
-    name = params[:suggestion]
-    return if name.blank? || !ours_to_suggest?(name)
-
-    Activity.new(name: name)
-  end
-
-  def ours_to_suggest?(name)
-    @activities.any? { |activity| activity.name == name } || ACTIVITIES_LIST.include?(name)
-  end
 
   def activity_not_found
     redirect_to root_path, alert: 'That activity does not exist.', status: :see_other # rubocop:disable Rails/I18nLocaleTexts
@@ -104,10 +94,6 @@ class ActivitiesController < ApplicationController
     return demo_activities.remove(@activity.name) unless @activity.persisted?
 
     @activity.destroy!
-  end
-
-  def suggestions_not_on_the_list
-    ACTIVITIES_LIST - @activities.map(&:name)
   end
 
   def list_without(candidate)

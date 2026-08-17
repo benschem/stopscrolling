@@ -55,10 +55,10 @@ RSpec.describe 'Activities index', type: :system do
 
   context 'when the user asks for something from their list' do
     before do
-      click_button 'Something I like'
+      click_button 'Something else'
     end
 
-    it 'displays a random activity' do
+    it 'draws one of their activities' do
       expect(page).to have_css('.answer strong', text: /book/i)
     end
   end

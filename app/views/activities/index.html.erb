@@ -1,9 +1,9 @@
 <% content_for :title, "Stop Scrolling" %>
 
-<section class="answer" data-draw="<%= draw_index(@random_activity) %>">
-  <% if @random_activity %>
+<section class="answer" data-draw="<%= draw_index(@drawn_activity) %>">
+  <% if @drawn_activity %>
     <h1>
-      <%= random_cta %> <strong><%= @random_activity.name.downcase %></strong>.
+      <%= random_cta %> <strong><%= @drawn_activity.name.downcase %></strong>.
     </h1>
   <% else %>
     <h1>Get off your phone and do something else.</h1>
@@ -14,39 +14,35 @@
   <% end %>
 
   <%# Drawing from their own list is only a distinct offer once they have one. Before that
-      both buttons pull from the same catalogue, which is a choice with nothing behind it. %>
+      both buttons pull from the same deck, which is a choice with nothing behind it. %>
   <% own_list = current_user.persisted? && @activities.present? %>
 
-  <%# These roll a die rather than fetch a fixed page, so they are POSTs, not links. Turbo only
-      morphs a redirect back to the exact url you were on, and these add ?suggestion=, so the
-      action it would infer is "advance". Saying "replace" is what keeps scroll and focus. %>
+  <%# These deal from a shuffled deck rather than fetch a fixed page, so they are POSTs, not
+      links. Turbo only morphs a redirect back to the exact url you were on, and these add
+      ?activity_name=, so the action it would infer is "advance". Saying "replace" is what
+      keeps scroll and focus. %>
   <div class="actions">
     <% if own_list %>
-      <%= button_to "Something I like",
-                    random_activities_path,
+      <%= button_to "Something else",
+                    pick_activities_path,
                     class: "primary",
                     data: { turbo_action: "replace" } %>
     <% end %>
 
-    <%= button_to "Something new",
-                  suggestion_activities_path,
+    <%= button_to "Go rogue",
+                  rogue_activities_path,
                   class: ("primary" unless own_list),
                   data: { turbo_action: "replace" } %>
   </div>
 </section>
 
 <section class="compose">
-  <h2>What do you like doing?</h2>
-  <p>You already know what you like, this is for when you can't make a decision</p>
+  <p>You have so many interests, write them down:</p>
   <%= render "form", activity: @activity %>
 </section>
 
 <section class="list">
-  <% if current_user.persisted? %>
-    <h2>Things you like doing</h2>
-  <% else %>
-    <h2>Things you could be doing</h2>
-  <% end %>
+  <h2>Likes</h2>
 
   <% if @activities.present? %>
     <ul>

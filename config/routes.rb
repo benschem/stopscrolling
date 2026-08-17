@@ -22,8 +22,8 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index create destroy], constraints: { id: /.+/ }, format: false do
     collection do
-      post 'random'
-      post 'suggestion'
+      post 'pick'  # draws from user's own list
+      post 'rogue' # draws from the app's list
     end
   end
 end

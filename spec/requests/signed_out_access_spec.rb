@@ -23,9 +23,9 @@ RSpec.describe 'Signed out access', type: :request do
     end
   end
 
-  describe 'POST /activities/random' do
+  describe 'POST /activities/pick' do
     before do
-      post random_activities_url
+      post pick_activities_url
       follow_redirect!
     end
 
@@ -34,9 +34,9 @@ RSpec.describe 'Signed out access', type: :request do
     end
   end
 
-  describe 'POST /activities/suggestion' do
+  describe 'POST /activities/rogue' do
     before do
-      post suggestion_activities_url
+      post rogue_activities_url
       follow_redirect!
     end
 
